@@ -1,9 +1,16 @@
-const tasksRoutes = require("./tasks");
+const blogsRoutes = require("./blogs");
 const commentsRoutes = require("./comments");
+const userRoutes = require("./users");
 
 const constructorMethod = (app) => {
-    app.use("/api/tasks", tasksRoutes);
-    app.use("/api/comments", commentsRoutes);
+    app.use("/blog/signup", userRoutes);
+    app.use("/blog/login", userRoutes);
+    app.use("/blog/logout", userRoutes);
+
+    app.use("/blog", blogsRoutes);
+
+    app.use("/blog/:id/comments", commentsRoutes);
+    app.use("/blog/:blogId/:commentId", commentsRoutes);
 
     //for accessing unknown routes
     app.use("*", (request, response) => {

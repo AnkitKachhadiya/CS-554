@@ -1,5 +1,5 @@
-const mongoColletions = require("../config/mongoCollections");
-const tasks = mongoColletions.tasks;
+const mongoCollections = require("../config/mongoCollections");
+const blogs = mongoCollections.blogs;
 const validator = require("../helpers/validator");
 
 async function getTasks() {}

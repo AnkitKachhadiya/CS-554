@@ -10,22 +10,19 @@ function isIdValid(_id, variableName) {}
 
 function isTitleValid(_title) {}
 
-function isDescriptionValid(_description) {}
-
-function isHoursEstimatedValid(_hoursEstimated) {}
-
-function isCompletedValid(_completed) {}
+function isCommentValid(_comment) {}
 
 function isNameValid(_name) {}
 
-function isCommentValid(_comment) {}
+function isUserNameValid(_userName) {}
+
+function isPasswordValid(_password) {}
 
 module.exports = {
     isIdValid,
     isTitleValid,
-    isDescriptionValid,
-    isHoursEstimatedValid,
-    isCompletedValid,
     isNameValid,
     isCommentValid,
+    isUserNameValid,
+    isPasswordValid,
 };
