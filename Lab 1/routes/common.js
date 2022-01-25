@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const ErrorCode = require("../helpers/error-code");
+
 const data = require("../data");
 const commentsData = data.comments;
 const usersData = data.users;
@@ -39,11 +41,26 @@ router.delete("/:blogId/:commentId", async (request, response) => {
 });
 
 router.post("/signup", async (request, response) => {
-    console.log("Hello12");
+    try {
+        if (request.session.user) {
+            throwError(
+                ErrorCode.FORBIDDEN,
+                "Error: You are already logged in."
+            );
+        }
+    } catch (error) {
+        response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
+            serverResponse: error.message || "Internal server error.",
+        });
+    }
 });
 
 router.post("/login", async (request, response) => {
     console.log("Hello1");
 });
+
+const throwError = (code = 500, message = "Internal Server Error") => {
+    throw { code, message };
+};
 
 module.exports = router;
