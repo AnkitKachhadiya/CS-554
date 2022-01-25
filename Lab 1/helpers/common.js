@@ -19,7 +19,7 @@ function isArgumentString(string, variableName) {
     }
 }
 
-function isStringEmpty(string) {
+function isStringEmpty(string, variableName) {
     if (!string.trim() || string.length < 1) {
         throwError(
             ErrorCode.BAD_REQUEST,
@@ -42,11 +42,11 @@ function isStringAlphaSpace(string, variableName) {
     }
 }
 
-function isStringLengthValid(string, requiredLength, variableName) {
-    if (string.trim().length < requiredLength) {
+function isStringLengthValid(string, mandatoryLength, variableName) {
+    if (string.trim().length < mandatoryLength) {
         throwError(
             ErrorCode.BAD_REQUEST,
-            `Error: ${variableName} should be of at least ${requiredLength} characters long.`
+            `Error: ${variableName} should be of at least ${mandatoryLength} characters long.`
         );
     }
 }
@@ -75,7 +75,13 @@ function isNonSpaceString(string, variableName) {
     }
 }
 
-const throwError = (code = 500, message = "Internal Server Error") => {
+function isTotalFieldsValid(totalFields, totalMandatoryFields) {
+    if (totalFields !== totalMandatoryFields) {
+        throwError(ErrorCode.BAD_REQUEST, "Error: You must supply all fields.");
+    }
+}
+
+const throwError = (code = 500, message = "Error: Internal server error") => {
     throw { code, message };
 };
 
@@ -87,4 +93,5 @@ module.exports = {
     isStringAlphaNumeric,
     isNonSpaceString,
     isStringLengthValid,
+    isTotalFieldsValid,
 };

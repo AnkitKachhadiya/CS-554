@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const xss = require("xss");
+const validator = require("../helpers/validator");
 const ErrorCode = require("../helpers/error-code");
 
 const data = require("../data");
@@ -48,9 +50,34 @@ router.post("/signup", async (request, response) => {
                 "Error: You are already logged in."
             );
         }
+
+        const requestPostData = request.body;
+
+        validator.isSignUpTotalFieldsValid(Object.keys(requestPostData).length);
+
+        const name = validator.isNameValid(xss(requestPostData.name));
+        const username = validator.isUsernameValid(
+            xss(requestPostData.username)
+        );
+        const password = validator.isPasswordValid(
+            xss(requestPostData.password)
+        );
+
+        const user = await usersData.create(name, username, password);
+
+        console.log(user);
+
+        if (!user) {
+            throwError(
+                ErrorCode.INTERNAL_SERVER_ERROR,
+                "Error: Internal server error"
+            );
+        }
+
+        response.json(user);
     } catch (error) {
         response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
-            serverResponse: error.message || "Internal server error.",
+            serverResponse: error.message || "Error: Internal server error.",
         });
     }
 });
@@ -59,7 +86,7 @@ router.post("/login", async (request, response) => {
     console.log("Hello1");
 });
 
-const throwError = (code = 500, message = "Internal Server Error") => {
+const throwError = (code = 500, message = "Error: Internal Server Error") => {
     throw { code, message };
 };
 

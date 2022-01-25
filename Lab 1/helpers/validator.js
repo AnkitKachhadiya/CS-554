@@ -19,7 +19,7 @@ function isIdValid(id, variableName) {
 function isObjectIdValid(objectId) {
     common.isObjectIdValid(objectId);
 
-    return ObjectId(id);
+    return ObjectId(objectId);
 }
 
 function isTitleValid(_title) {}
@@ -37,16 +37,16 @@ function isNameValid(_name) {
     return name;
 }
 
-function isUserNameValid(userName) {
-    common.isArgumentString(userName, "username");
-    common.isStringEmpty(userName, "username");
+function isUsernameValid(username) {
+    common.isArgumentString(username, "username");
+    common.isStringEmpty(username, "username");
 
-    const minimumUserNameLength = 4;
+    const MINIMUM_USERNAME_LENGTH = 4;
 
-    common.isStringLengthValid(userName, minimumUserNameLength, "Username");
-    common.isStringAlphaNumeric(userName, "Username");
+    common.isStringLengthValid(username, MINIMUM_USERNAME_LENGTH, "Username");
+    common.isStringAlphaNumeric(username, "Username");
 
-    return userName;
+    return username;
 }
 
 function isPasswordValid(password) {
@@ -54,11 +54,23 @@ function isPasswordValid(password) {
     common.isStringEmpty(password, "password");
     common.isNonSpaceString(password, "Password");
 
-    const minimumPasswordLength = 6;
+    const MINIMUM_PASSWORD_LENGTH = 6;
 
-    common.isStringLengthValid(password, minimumPasswordLength, "Password");
+    common.isStringLengthValid(password, MINIMUM_PASSWORD_LENGTH, "Password");
 
     return password;
+}
+
+function isSignUpTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 3;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isUserCreateTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 3;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
 }
 
 module.exports = {
@@ -67,6 +79,8 @@ module.exports = {
     isTitleValid,
     isNameValid,
     isCommentValid,
-    isUserNameValid,
+    isUsernameValid,
     isPasswordValid,
+    isSignUpTotalFieldsValid,
+    isUserCreateTotalFieldsValid,
 };
