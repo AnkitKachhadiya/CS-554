@@ -1,16 +1,7 @@
-const blogsRoutes = require("./blogs");
-const commentsRoutes = require("./comments");
-const userRoutes = require("./users");
+const commonRoutes = require("./common");
 
 const constructorMethod = (app) => {
-    app.use("/blog/signup", userRoutes);
-    app.use("/blog/login", userRoutes);
-    app.use("/blog/logout", userRoutes);
-
-    app.use("/blog", blogsRoutes);
-
-    app.use("/blog/:id/comments", commentsRoutes);
-    app.use("/blog/:blogId/:commentId", commentsRoutes);
+    app.use("/blog", commonRoutes);
 
     //for accessing unknown routes
     app.use("*", (request, response) => {

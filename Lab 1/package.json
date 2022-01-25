@@ -10,8 +10,10 @@
     "author": "Ankit Hasmukh Kachhadiya 20007140",
     "license": "ISC",
     "dependencies": {
+        "bcryptjs": "^2.4.3",
         "express": "^4.17.2",
+        "express-session": "^1.17.2",
         "mongodb": "^4.3.0",
-        "uuid": "^8.3.2"
+        "xss": "^1.0.10"
     }
 }
