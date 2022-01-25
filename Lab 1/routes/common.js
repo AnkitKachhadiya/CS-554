@@ -15,7 +15,20 @@ router.get("/", async (request, response) => {
 });
 
 router.get("/logout", async (request, response) => {
-    console.log("Hello");
+    try {
+        const user = request.session.user;
+
+        if (user) {
+            request.session.destroy();
+            response.json({ message: "You are logged out." });
+        } else {
+            throwError(ErrorCode.FORBIDDEN, "Error: You are not logged in.");
+        }
+    } catch (error) {
+        response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
+            serverResponse: error.message || "Error: Internal server error.",
+        });
+    }
 });
 
 router.get("/:id", async (request, response) => {
@@ -65,8 +78,6 @@ router.post("/signup", async (request, response) => {
 
         const user = await usersData.create(name, username, password);
 
-        console.log(user);
-
         if (!user) {
             throwError(
                 ErrorCode.INTERNAL_SERVER_ERROR,
@@ -83,7 +94,42 @@ router.post("/signup", async (request, response) => {
 });
 
 router.post("/login", async (request, response) => {
-    console.log("Hello1");
+    try {
+        if (request.session.user) {
+            throwError(
+                ErrorCode.FORBIDDEN,
+                "Error: You are already logged in."
+            );
+        }
+
+        const requestPostData = request.body;
+
+        validator.isLoginTotalFieldsValid(Object.keys(requestPostData).length);
+
+        const username = validator.isUsernameValid(
+            xss(requestPostData.username)
+        );
+        const password = validator.isPasswordValid(
+            xss(requestPostData.password)
+        );
+
+        const user = await usersData.checkUser(username, password);
+
+        if (!user) {
+            throwError(
+                ErrorCode.INTERNAL_SERVER_ERROR,
+                "Error: Internal Server Error"
+            );
+        }
+
+        request.session.user = { _id: user._id, username: user.username };
+
+        response.json(user);
+    } catch (error) {
+        response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
+            serverResponse: error.message || "Error: Internal server error.",
+        });
+    }
 });
 
 const throwError = (code = 500, message = "Error: Internal Server Error") => {

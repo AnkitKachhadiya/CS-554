@@ -50,6 +50,56 @@ async function create(_name, _username, _password) {
     }
 }
 
+async function checkUser(_username, _password) {
+    try {
+        validator.isCheckUserTotalFieldsValid(arguments.length);
+
+        const username = validator.isUsernameValid(xss(_username));
+        const password = validator.isPasswordValid(xss(_password));
+
+        const usersCollection = await users();
+
+        const user = await usersCollection.findOne(
+            { username: username },
+            {
+                projection: {
+                    _id: {
+                        $toString: "$_id",
+                    },
+                    name: 1,
+                    username: 1,
+                    password: 1,
+                },
+            }
+        );
+
+        if (!user) {
+            throwError(
+                ErrorCode.BAD_REQUEST,
+                "Error: Incorrect username or password."
+            );
+        }
+
+        const isPasswordCorrect = await bcryptjs.compare(
+            password,
+            user.password
+        );
+
+        if (!isPasswordCorrect) {
+            throwError(
+                ErrorCode.BAD_REQUEST,
+                "Error: Incorrect username or password."
+            );
+        }
+
+        delete user.password;
+
+        return user;
+    } catch (error) {
+        throwCatchError(error);
+    }
+}
+
 async function get(_userId) {
     try {
         const userId = validator.isIdValid(xss(_userId), "user id");
@@ -98,4 +148,5 @@ const throwCatchError = (error) => {
 
 module.exports = {
     create,
+    checkUser,
 };

@@ -73,6 +73,18 @@ function isUserCreateTotalFieldsValid(totalFields) {
     common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
 }
 
+function isLoginTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 2;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isCheckUserTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 2;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
 module.exports = {
     isIdValid,
     isObjectIdValid,
@@ -83,4 +95,6 @@ module.exports = {
     isPasswordValid,
     isSignUpTotalFieldsValid,
     isUserCreateTotalFieldsValid,
+    isLoginTotalFieldsValid,
+    isCheckUserTotalFieldsValid,
 };
