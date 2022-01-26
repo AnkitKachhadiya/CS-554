@@ -1,14 +1,6 @@
 const { ObjectId } = require("mongodb");
 const common = require("./common");
 
-const ErrorCode = {
-    BAD_REQUEST: 400,
-    UNAUTHORIZED: 401,
-    FORBIDDEN: 403,
-    NOT_FOUND: 404,
-    INTERNAL_SERVER_ERROR: 500,
-};
-
 function isIdValid(id, variableName) {
     common.isArgumentString(id, variableName);
     common.isStringEmpty(id, variableName);
@@ -22,7 +14,19 @@ function isObjectIdValid(objectId) {
     return ObjectId(objectId);
 }
 
-function isTitleValid(_title) {}
+function isTitleValid(title) {
+    common.isArgumentString(title, "title");
+    common.isStringEmpty(title, "title");
+
+    return title.trim();
+}
+
+function isBodyValid(body) {
+    common.isArgumentString(body, "body");
+    common.isStringEmpty(body, "body");
+
+    return body.trim();
+}
 
 function isCommentValid(_comment) {}
 
@@ -85,10 +89,49 @@ function isCheckUserTotalFieldsValid(totalFields) {
     common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
 }
 
+function isPostBlogTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 2;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isBlogCreateTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 4;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isBlogGetTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 1;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isPutBlogTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 2;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isBlogUpdateTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 3;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function restrictRequestQuery(total) {
+    common.isRequestQueryPresent(total);
+}
+
+function restrictRequestBody(total) {
+    common.isRequestBodyPresent(total);
+}
+
 module.exports = {
     isIdValid,
     isObjectIdValid,
     isTitleValid,
+    isBodyValid,
     isNameValid,
     isCommentValid,
     isUsernameValid,
@@ -97,4 +140,11 @@ module.exports = {
     isUserCreateTotalFieldsValid,
     isLoginTotalFieldsValid,
     isCheckUserTotalFieldsValid,
+    isPostBlogTotalFieldsValid,
+    isBlogCreateTotalFieldsValid,
+    isBlogGetTotalFieldsValid,
+    isPutBlogTotalFieldsValid,
+    isBlogUpdateTotalFieldsValid,
+    restrictRequestQuery,
+    restrictRequestBody,
 };

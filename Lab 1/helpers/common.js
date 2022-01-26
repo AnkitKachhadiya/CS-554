@@ -3,7 +3,10 @@ const { ObjectId } = require("mongodb");
 const ErrorCode = require("./error-code");
 
 function isObjectIdValid(id) {
-    if (!ObjectId.isValid(id)) {
+    //should match 24 length Hex string
+    const objectIdRegex = /^[a-fA-F0-9]{24}$/;
+
+    if (!ObjectId.isValid(id) || !objectIdRegex.test(id)) {
         throwError(ErrorCode.BAD_REQUEST, "Error: id is not a valid ObjectId.");
     }
 }
@@ -81,6 +84,21 @@ function isTotalFieldsValid(totalFields, totalMandatoryFields) {
     }
 }
 
+function isRequestQueryPresent(total) {
+    if (total > 0) {
+        throwError(ErrorCode.BAD_REQUEST, "Error: Request query not allowed.");
+    }
+}
+
+function isRequestBodyPresent(total) {
+    if (total > 0) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            "Error: Error: Doesn't require fields to be passed."
+        );
+    }
+}
+
 const throwError = (code = 500, message = "Error: Internal server error") => {
     throw { code, message };
 };
@@ -94,4 +112,6 @@ module.exports = {
     isNonSpaceString,
     isStringLengthValid,
     isTotalFieldsValid,
+    isRequestQueryPresent,
+    isRequestBodyPresent,
 };

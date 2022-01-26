@@ -12,7 +12,9 @@ async function create(_name, _username, _password) {
         validator.isUserCreateTotalFieldsValid(arguments.length);
 
         const name = validator.isNameValid(xss(_name));
-        const username = validator.isUsernameValid(xss(_username));
+        const username = validator
+            .isUsernameValid(xss(_username))
+            .toLowerCase();
         const password = validator.isPasswordValid(xss(_password));
 
         const usersCollection = await users();
@@ -42,6 +44,7 @@ async function create(_name, _username, _password) {
                 "Error: Couldn't add user."
             );
         }
+
         const insertedUserId = insertedInfo.insertedId;
 
         return await get(insertedUserId.toString());
@@ -54,7 +57,9 @@ async function checkUser(_username, _password) {
     try {
         validator.isCheckUserTotalFieldsValid(arguments.length);
 
-        const username = validator.isUsernameValid(xss(_username));
+        const username = validator
+            .isUsernameValid(xss(_username))
+            .toLowerCase();
         const password = validator.isPasswordValid(xss(_password));
 
         const usersCollection = await users();
@@ -75,7 +80,7 @@ async function checkUser(_username, _password) {
 
         if (!user) {
             throwError(
-                ErrorCode.BAD_REQUEST,
+                ErrorCode.FORBIDDEN,
                 "Error: Incorrect username or password."
             );
         }
@@ -87,7 +92,7 @@ async function checkUser(_username, _password) {
 
         if (!isPasswordCorrect) {
             throwError(
-                ErrorCode.BAD_REQUEST,
+                ErrorCode.FORBIDDEN,
                 "Error: Incorrect username or password."
             );
         }
