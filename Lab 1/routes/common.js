@@ -45,7 +45,6 @@ router.get("/:id", async (request, response) => {
 
         const blog = await blogsData.get(blogId);
 
-        console.log(blog);
         response.json(blog);
     } catch (error) {
         response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
@@ -120,7 +119,11 @@ router.put("/:id", async (request, response) => {
 
         const userId = request.session.user._id;
 
-        const updatedBlog = await blogsData.update(userId, blogId, updateBlog);
+        const updatedBlog = await blogsData.update(
+            userId.toString(),
+            blogId,
+            updateBlog
+        );
 
         response.json(updatedBlog);
     } catch (error) {
@@ -131,7 +134,59 @@ router.put("/:id", async (request, response) => {
 });
 
 router.patch("/:id", async (request, response) => {
-    console.log("Hello15");
+    try {
+        validator.restrictRequestQuery(Object.keys(request.query).length);
+
+        if (!request.session.user) {
+            throwError(ErrorCode.FORBIDDEN, "Error: You are not logged in.");
+        }
+
+        const requestPostData = request.body;
+
+        if (Object.keys(requestPostData).length < 1) {
+            throwError(
+                ErrorCode.BAD_REQUEST,
+                "Error: At least 1 field is required for updation."
+            );
+        }
+
+        const updateBlog = {};
+
+        if (requestPostData.title) {
+            updateBlog.title = validator.isTitleValid(
+                xss(requestPostData.title)
+            );
+        }
+
+        if (requestPostData.body) {
+            updateBlog.body = validator.isBodyValid(xss(requestPostData.body));
+        }
+
+        if (Object.keys(updateBlog).length < 1) {
+            throwError(
+                ErrorCode.BAD_REQUEST,
+                "Error: At least 1 field is required for updation."
+            );
+        }
+
+        const blogId = validator.isIdValid(xss(request.params.id), "blog id");
+
+        validator.isObjectIdValid(blogId);
+
+        const userId = request.session.user._id;
+
+        const updatedBlog = await blogsData.update(
+            userId.toString(),
+            blogId,
+            updateBlog
+        );
+
+        response.json(updatedBlog);
+    } catch (error) {
+        response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
+            serverResponse: error.message || "Error: Internal server error.",
+        });
+    }
 });
 
 router.post("/:id/comments", async (request, response) => {
