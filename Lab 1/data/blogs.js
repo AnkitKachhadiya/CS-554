@@ -17,7 +17,11 @@ async function create(_userId, _username, _title, _body) {
         const title = validator.isTitleValid(xss(_title));
         const body = validator.isBodyValid(xss(_body));
 
-        await isValidUser(parsedObjectId);
+        const user = await isValidUser(parsedUserObjectId);
+
+        if (user.username !== username) {
+            throwError(ErrorCode.NOT_FOUND, "Error: User not found.");
+        }
 
         const blogsCollection = await blogs();
 
@@ -113,6 +117,8 @@ async function update(_userId, _blogId, updateBlog) {
         const blogId = validator.isIdValid(xss(_blogId), "blog id");
         const parsedBlogObjectId = validator.isObjectIdValid(blogId);
 
+        validateUpdateBlog(updateBlog);
+
         await isValidUser(parsedUserObjectId);
 
         const blogsCollection = await blogs();
@@ -191,8 +197,11 @@ async function createComment(_userId, _username, _blogId, _comment) {
 
         const comment = validator.isCommentValid(xss(_comment));
 
-        // validate whether userid and username matches
-        await isValidUser(parsedUserObjectId);
+        const user = await isValidUser(parsedUserObjectId);
+
+        if (user.username !== username) {
+            throwError(ErrorCode.NOT_FOUND, "Error: User not found.");
+        }
 
         const blogsCollection = await blogs();
 
@@ -374,10 +383,68 @@ async function isValidUser(userId) {
         if (!user) {
             throwError(ErrorCode.NOT_FOUND, "Error: User not found.");
         }
+
+        return user;
     } catch (error) {
         throwCatchError(error);
     }
 }
+
+function validateUpdateBlog(updateBlog) {
+    isArgumentObject(updateBlog, "update blog");
+    isObjectEmpty(updateBlog, "update blog");
+
+    const validTotalUpdateElements = [1, 2];
+
+    if (!validTotalUpdateElements.includes(Object.keys(updateBlog).length)) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            "Error: Update blog has invalid number of parameters."
+        );
+    }
+
+    if (
+        !updateBlog.hasOwnProperty("take") ||
+        !updateBlog.hasOwnProperty("skip")
+    ) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            "Error: Update blog does not have valid parameters."
+        );
+    }
+}
+
+const isArgumentObject = (obj, variableName) => {
+    if (!isObject(obj)) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: Invalid argument passed for ${
+                variableName || "provided variable"
+            }. Expected object.`
+        );
+    }
+};
+
+const isObject = (obj) => {
+    return (
+        !Array.isArray(obj) &&
+        typeof obj === "object" &&
+        obj !== null &&
+        obj instanceof Object &&
+        obj.constructor === Object
+    );
+};
+
+const isObjectEmpty = (obj, variableName) => {
+    if (Object.keys(obj).length < 1) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: Empty object passed for ${
+                variableName || "provided variable"
+            }.`
+        );
+    }
+};
 
 const throwError = (code = 500, message = "Error: Internal Server Error") => {
     throw { code, message };
