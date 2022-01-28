@@ -191,6 +191,7 @@ async function createComment(_userId, _username, _blogId, _comment) {
 
         const comment = validator.isCommentValid(xss(_comment));
 
+        // validate whether userid and username matches
         await isValidUser(parsedUserObjectId);
 
         const blogsCollection = await blogs();
@@ -289,8 +290,65 @@ async function getBlogs(_skip, _take) {
     }
 }
 
-async function deleteComment() {
+async function deleteComment(_userId, _blogId, _commentId) {
     try {
+        validator.isDeleteCommentTotalFieldsValid(arguments.length);
+
+        const userId = validator.isIdValid(xss(_userId), "user id");
+        const parsedUserObjectId = validator.isObjectIdValid(userId);
+
+        const blogId = validator.isIdValid(xss(_blogId), "blog id");
+        const parsedBlogObjectId = validator.isObjectIdValid(blogId);
+
+        const commentId = validator.isIdValid(xss(_commentId), "comment id");
+        const parsedCommentObjectId = validator.isObjectIdValid(commentId);
+
+        await isValidUser(parsedUserObjectId);
+
+        const blogsCollection = await blogs();
+
+        const commentResult = await blogsCollection.findOne(
+            {
+                "comments._id": parsedCommentObjectId,
+            },
+            { projection: { _id: 1, "comments.$": 1 } }
+        );
+
+        if (!commentResult) {
+            throwError(ErrorCode.NOT_FOUND, "Error: Comment not found.");
+        }
+
+        const [comment] = commentResult.comments;
+
+        if (
+            commentResult._id.toString() !== blogId ||
+            comment._id.toString() !== commentId ||
+            comment.userThatPostedComment._id.toString() !== userId
+        ) {
+            throwError(ErrorCode.NOT_FOUND, "Error: Comment not found.");
+        }
+
+        const updatedInfo = await blogsCollection.updateOne(
+            {
+                _id: parsedBlogObjectId,
+            },
+            {
+                $pull: {
+                    comments: {
+                        _id: parsedCommentObjectId,
+                    },
+                },
+            }
+        );
+
+        if (updatedInfo.modifiedCount !== 1) {
+            throwError(
+                ErrorCode.INTERNAL_SERVER_ERROR,
+                "Error: Could not delete comment."
+            );
+        }
+
+        return { commentId: commentId, deleted: true };
     } catch (error) {
         throwCatchError(error);
     }

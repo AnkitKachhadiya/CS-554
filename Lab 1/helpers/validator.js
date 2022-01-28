@@ -166,6 +166,12 @@ function isGetBlogsTotalFieldsValid(totalFields) {
     common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
 }
 
+function isDeleteCommentTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 3;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
 function restrictRequestQuery(total) {
     common.isRequestQueryPresent(total);
 }
@@ -197,6 +203,7 @@ module.exports = {
     isPostCommentTotalFieldsValid,
     isCreateCommentTotalFieldsValid,
     isGetBlogsTotalFieldsValid,
+    isDeleteCommentTotalFieldsValid,
     restrictRequestQuery,
     restrictRequestBody,
 };

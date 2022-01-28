@@ -247,7 +247,39 @@ router.post("/:id/comments", async (request, response) => {
 });
 
 router.delete("/:blogId/:commentId", async (request, response) => {
-    console.log("Hello13");
+    try {
+        validator.restrictRequestQuery(Object.keys(request.query).length);
+
+        if (!request.session.user) {
+            throwError(ErrorCode.FORBIDDEN, "Error: You are not logged in.");
+        }
+
+        const blogId = validator.isIdValid(
+            xss(request.params.blogId),
+            "blog id"
+        );
+        validator.isObjectIdValid(blogId);
+
+        const commentId = validator.isIdValid(
+            xss(request.params.commentId),
+            "comment id"
+        );
+        validator.isObjectIdValid(commentId);
+
+        const userId = request.session.user._id;
+
+        const deletedComment = await blogsData.deleteComment(
+            userId.toString(),
+            blogId,
+            commentId
+        );
+
+        response.json(deletedComment);
+    } catch (error) {
+        response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
+            serverResponse: error.message || "Error: Internal server error.",
+        });
+    }
 });
 
 router.post("/signup", async (request, response) => {
