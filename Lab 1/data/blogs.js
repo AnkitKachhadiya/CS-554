@@ -4,6 +4,7 @@ const users = mongoCollections.users;
 const xss = require("xss");
 const validator = require("../helpers/validator");
 const ErrorCode = require("../helpers/error-code");
+const { ObjectId } = require("mongodb");
 
 async function create(_userId, _username, _title, _body) {
     try {
@@ -41,13 +42,13 @@ async function create(_userId, _username, _title, _body) {
 
         const insertedBlogId = insertedInfo.insertedId;
 
-        return await get(insertedBlogId.toString());
+        return await getBlogById(insertedBlogId.toString());
     } catch (error) {
         throwCatchError(error);
     }
 }
 
-async function get(_blogId) {
+async function getBlogById(_blogId) {
     try {
         validator.isBlogGetTotalFieldsValid(arguments.length);
 
@@ -67,10 +68,26 @@ async function get(_blogId) {
                     title: 1,
                     body: 1,
                     userThatPosted: {
-                        _id: { $toString: "$_id" },
+                        _id: { $toString: "$userThatPosted._id" },
                         username: 1,
                     },
-                    comments: 1,
+                    comments: {
+                        $map: {
+                            input: "$comments",
+                            in: {
+                                _id: { $toString: "$$this._id" },
+                                comment: "$$this.comment",
+                                userThatPostedComment: {
+                                    _id: {
+                                        $toString:
+                                            "$$this.userThatPostedComment._id",
+                                    },
+                                    username:
+                                        "$$this.userThatPostedComment.username",
+                                },
+                            },
+                        },
+                    },
                 },
             }
         );
@@ -154,7 +171,126 @@ async function update(_userId, _blogId, updateBlog) {
             );
         }
 
-        return await get(blogId);
+        return await getBlogById(blogId);
+    } catch (error) {
+        throwCatchError(error);
+    }
+}
+
+async function createComment(_userId, _username, _blogId, _comment) {
+    try {
+        validator.isCreateCommentTotalFieldsValid(arguments.length);
+
+        const userId = validator.isIdValid(xss(_userId), "user id");
+        const parsedUserObjectId = validator.isObjectIdValid(userId);
+
+        const username = validator.isUsernameValid(xss(_username));
+
+        const blogId = validator.isIdValid(xss(_blogId), "blog id");
+        const parsedBlogObjectId = validator.isObjectIdValid(blogId);
+
+        const comment = validator.isCommentValid(xss(_comment));
+
+        await isValidUser(parsedUserObjectId);
+
+        const blogsCollection = await blogs();
+
+        const blog = await blogsCollection.findOne({
+            _id: parsedBlogObjectId,
+        });
+
+        if (!blog) {
+            throwError(ErrorCode.NOT_FOUND, "Error: Blog not found.");
+        }
+
+        const newComment = {
+            _id: ObjectId(),
+            userThatPostedComment: {
+                _id: parsedUserObjectId,
+                username: username,
+            },
+            comment: comment,
+        };
+
+        const updatedInfo = await blogsCollection.updateOne(
+            { _id: parsedBlogObjectId },
+            {
+                $push: { comments: newComment },
+            }
+        );
+
+        if (updatedInfo.modifiedCount !== 1) {
+            throwError(
+                ErrorCode.INTERNAL_SERVER_ERROR,
+                "Error: Could not add comment."
+            );
+        }
+
+        return await getBlogById(blogId);
+    } catch (error) {
+        throwCatchError(error);
+    }
+}
+
+async function getBlogs(_skip, _take) {
+    try {
+        validator.isGetBlogsTotalFieldsValid(arguments.length);
+
+        const DEFAULT_SKIP = 0;
+        const skip = _skip ? validator.isSkipValid(xss(_skip)) : DEFAULT_SKIP;
+
+        const DEFAULT_TAKE = 20;
+        const take = _take ? validator.isTakeValid(xss(_take)) : DEFAULT_TAKE;
+
+        const blogsCollection = await blogs();
+
+        const relevantBlogs = await blogsCollection
+            .find(
+                {},
+                {
+                    projection: {
+                        _id: {
+                            $toString: "$_id",
+                        },
+                        title: 1,
+                        body: 1,
+                        userThatPosted: {
+                            _id: { $toString: "$userThatPosted._id" },
+                            username: 1,
+                        },
+                        comments: {
+                            $map: {
+                                input: "$comments",
+                                in: {
+                                    _id: { $toString: "$$this._id" },
+                                    comment: "$$this.comment",
+                                    userThatPostedComment: {
+                                        _id: {
+                                            $toString:
+                                                "$$this.userThatPostedComment._id",
+                                        },
+                                        username:
+                                            "$$this.userThatPostedComment.username",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                }
+            )
+            .skip(skip)
+            .limit(take)
+            .toArray();
+
+        return relevantBlogs;
+    } catch (error) {
+        console.log(error);
+        throwCatchError(error);
+    }
+}
+
+async function deleteComment() {
+    try {
     } catch (error) {
         throwCatchError(error);
     }
@@ -202,6 +338,9 @@ const throwCatchError = (error) => {
 
 module.exports = {
     create,
-    get,
+    getBlogById,
     update,
+    createComment,
+    getBlogs,
+    deleteComment,
 };

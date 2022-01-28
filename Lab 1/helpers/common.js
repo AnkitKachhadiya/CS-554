@@ -99,6 +99,46 @@ function isRequestBodyPresent(total) {
     }
 }
 
+function isStringValidInteger(string, variableName) {
+    isArgumentString(string, variableName);
+    isStringEmpty(string, variableName);
+
+    const number = parseInt(string, 10);
+
+    isNumber(number, variableName);
+}
+
+function isNumber(number, variableName) {
+    if (typeof number !== "number" || isNaN(number)) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${variableName || "Provided variable"} must be a number.`
+        );
+    }
+}
+
+function isNumberPositive(number, variableName) {
+    if (number < 0) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${
+                variableName || "provided variable"
+            } should be a positive number.`
+        );
+    }
+}
+
+function isNumberUnderUpperLimit(number, upperLimit, variableName) {
+    if (number > upperLimit) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: Value for ${
+                variableName || "provided variable"
+            } cannot be more than ${upperLimit}`
+        );
+    }
+}
+
 const throwError = (code = 500, message = "Error: Internal server error") => {
     throw { code, message };
 };
@@ -114,4 +154,8 @@ module.exports = {
     isTotalFieldsValid,
     isRequestQueryPresent,
     isRequestBodyPresent,
+    isStringValidInteger,
+    isNumberPositive,
+    isNumberUnderUpperLimit,
+    isNumber,
 };

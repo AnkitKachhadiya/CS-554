@@ -6,13 +6,33 @@ const validator = require("../helpers/validator");
 const ErrorCode = require("../helpers/error-code");
 
 const data = require("../data");
-const commentsData = data.comments;
 const usersData = data.users;
 const blogsData = data.blogs;
 
 router.get("/", async (request, response) => {
-    console.log("Hello19");
-    console.log(request.query);
+    try {
+        const requestQueryData = request.query;
+
+        const DEFAULT_SKIP = 0;
+        const skip = requestQueryData.skip
+            ? validator.isSkipValid(xss(requestQueryData.skip))
+            : DEFAULT_SKIP;
+
+        const DEFAULT_TAKE = 20;
+        const take = requestQueryData.take
+            ? validator.isTakeValid(xss(requestQueryData.take))
+            : DEFAULT_TAKE;
+
+        const blogs = await blogsData.getBlogs(skip, take);
+
+        console.dir(blogs, { depth: null });
+
+        response.json(blogs);
+    } catch (error) {
+        response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
+            serverResponse: error.message || "Error: Internal server error.",
+        });
+    }
 });
 
 router.get("/logout", async (request, response) => {
@@ -43,7 +63,7 @@ router.get("/:id", async (request, response) => {
 
         validator.isObjectIdValid(blogId);
 
-        const blog = await blogsData.get(blogId);
+        const blog = await blogsData.getBlogById(blogId);
 
         response.json(blog);
     } catch (error) {
@@ -190,7 +210,40 @@ router.patch("/:id", async (request, response) => {
 });
 
 router.post("/:id/comments", async (request, response) => {
-    console.log("Hello14");
+    try {
+        validator.restrictRequestQuery(Object.keys(request.query).length);
+
+        if (!request.session.user) {
+            throwError(ErrorCode.FORBIDDEN, "Error: You are not logged in.");
+        }
+
+        const requestPostData = request.body;
+
+        validator.isPostCommentTotalFieldsValid(
+            Object.keys(requestPostData).length
+        );
+
+        const comment = validator.isCommentValid(xss(requestPostData.comment));
+        const blogId = validator.isIdValid(xss(request.params.id), "blog id");
+
+        validator.isObjectIdValid(blogId);
+
+        const userId = request.session.user._id;
+        const username = request.session.user.username;
+
+        const updatedBlog = await blogsData.createComment(
+            userId.toString(),
+            username,
+            blogId,
+            comment
+        );
+
+        response.json(updatedBlog);
+    } catch (error) {
+        response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
+            serverResponse: error.message || "Error: Internal server error.",
+        });
+    }
 });
 
 router.delete("/:blogId/:commentId", async (request, response) => {

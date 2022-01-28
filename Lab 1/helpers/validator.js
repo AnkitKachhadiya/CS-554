@@ -28,7 +28,12 @@ function isBodyValid(body) {
     return body.trim();
 }
 
-function isCommentValid(_comment) {}
+function isCommentValid(comment) {
+    common.isArgumentString(comment, "comment");
+    common.isStringEmpty(comment, "comment");
+
+    return comment.trim();
+}
 
 function isNameValid(_name) {
     common.isArgumentString(_name, "name");
@@ -63,6 +68,30 @@ function isPasswordValid(password) {
     common.isStringLengthValid(password, MINIMUM_PASSWORD_LENGTH, "Password");
 
     return password;
+}
+
+function isSkipValid(_skip) {
+    common.isStringValidInteger(_skip, "skip");
+
+    const skip = parseInt(_skip, 10);
+
+    common.isNumberPositive(skip, "Skip");
+
+    return skip;
+}
+
+function isTakeValid(_take) {
+    common.isStringValidInteger(_take, "take");
+
+    const take = parseInt(_take, 10);
+
+    common.isNumberPositive(take, "Take");
+
+    const UPPER_LIMIT = 100;
+
+    common.isNumberUnderUpperLimit(take, UPPER_LIMIT, "take");
+
+    return take;
 }
 
 function isSignUpTotalFieldsValid(totalFields) {
@@ -119,6 +148,24 @@ function isBlogUpdateTotalFieldsValid(totalFields) {
     common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
 }
 
+function isPostCommentTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 1;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isCreateCommentTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 4;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isGetBlogsTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 2;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
 function restrictRequestQuery(total) {
     common.isRequestQueryPresent(total);
 }
@@ -136,6 +183,8 @@ module.exports = {
     isCommentValid,
     isUsernameValid,
     isPasswordValid,
+    isSkipValid,
+    isTakeValid,
     isSignUpTotalFieldsValid,
     isUserCreateTotalFieldsValid,
     isLoginTotalFieldsValid,
@@ -145,6 +194,9 @@ module.exports = {
     isBlogGetTotalFieldsValid,
     isPutBlogTotalFieldsValid,
     isBlogUpdateTotalFieldsValid,
+    isPostCommentTotalFieldsValid,
+    isCreateCommentTotalFieldsValid,
+    isGetBlogsTotalFieldsValid,
     restrictRequestQuery,
     restrictRequestBody,
 };
