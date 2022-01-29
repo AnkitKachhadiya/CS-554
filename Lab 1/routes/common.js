@@ -169,28 +169,30 @@ router.patch("/:id", async (request, response) => {
             );
         }
 
+        const blogId = validator.isIdValid(xss(request.params.id), "blog id");
+
+        validator.isObjectIdValid(blogId);
+
+        const blog = await blogsData.getBlogById(blogId);
+
         const updateBlog = {};
 
-        if (requestPostData.title) {
+        if (requestPostData.title && requestPostData.title !== blog.title) {
             updateBlog.title = validator.isTitleValid(
                 xss(requestPostData.title)
             );
         }
 
-        if (requestPostData.body) {
+        if (requestPostData.body && requestPostData.body !== blog.body) {
             updateBlog.body = validator.isBodyValid(xss(requestPostData.body));
         }
 
         if (Object.keys(updateBlog).length < 1) {
             throwError(
                 ErrorCode.BAD_REQUEST,
-                "Error: At least 1 field is required for updation."
+                "Error: No fields have been changed from their initial values, so no update has occurred."
             );
         }
-
-        const blogId = validator.isIdValid(xss(request.params.id), "blog id");
-
-        validator.isObjectIdValid(blogId);
 
         const userId = request.session.user._id;
 
