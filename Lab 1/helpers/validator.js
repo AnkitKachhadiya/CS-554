@@ -172,6 +172,18 @@ function isDeleteCommentTotalFieldsValid(totalFields) {
     common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
 }
 
+function isUserBlogComboTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 2;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isUserBlogCommentComboTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 3;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
 function restrictRequestQuery(total) {
     common.isRequestQueryPresent(total);
 }
@@ -204,6 +216,8 @@ module.exports = {
     isCreateCommentTotalFieldsValid,
     isGetBlogsTotalFieldsValid,
     isDeleteCommentTotalFieldsValid,
+    isUserBlogComboTotalFieldsValid,
+    isUserBlogCommentComboTotalFieldsValid,
     restrictRequestQuery,
     restrictRequestBody,
 };

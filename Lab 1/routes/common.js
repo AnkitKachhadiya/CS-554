@@ -25,8 +25,6 @@ router.get("/", async (request, response) => {
 
         const blogs = await blogsData.getBlogs(skip, take);
 
-        console.dir(blogs, { depth: null });
-
         response.json(blogs);
     } catch (error) {
         response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
@@ -109,6 +107,7 @@ router.post("/", async (request, response) => {
 
         response.json(blog);
     } catch (error) {
+        console.log(error);
         response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
             serverResponse: error.message || "Error: Internal server error.",
         });

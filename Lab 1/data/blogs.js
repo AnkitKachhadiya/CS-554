@@ -17,7 +17,7 @@ async function create(_userId, _username, _title, _body) {
         const title = validator.isTitleValid(xss(_title));
         const body = validator.isBodyValid(xss(_body));
 
-        const user = await isValidUser(parsedUserObjectId);
+        const user = await isValidUser(parsedObjectId);
 
         if (user.username !== username) {
             throwError(ErrorCode.NOT_FOUND, "Error: User not found.");
