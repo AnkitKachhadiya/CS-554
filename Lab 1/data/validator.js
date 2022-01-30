@@ -17,6 +17,8 @@ async function isUserBlogComboValid(_userId, _blogId) {
 
         await isValidUser(parsedUserObjectId);
 
+        const blogsCollection = await blogs();
+
         const blog = await blogsCollection.findOne({
             _id: parsedBlogObjectId,
             "userThatPosted._id": parsedUserObjectId,
@@ -103,6 +105,7 @@ const throwError = (code = 500, message = "Error: Internal Server Error") => {
 };
 
 const throwCatchError = (error) => {
+    console.log(error);
     if (error.code && error.message) {
         throwError(error.code, error.message);
     }

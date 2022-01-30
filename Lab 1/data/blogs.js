@@ -102,7 +102,6 @@ async function getBlogById(_blogId) {
 
         return blog;
     } catch (error) {
-        console.log(error);
         throwCatchError(error);
     }
 }
@@ -145,7 +144,8 @@ async function update(_userId, _blogId, updateBlog) {
         if (updateBlog.body) {
             toBeUpdated.body = validator.isBodyValid(xss(updateBlog.body));
 
-            isAnyChange = toBeUpdated.body === blog.body ? false : true;
+            isAnyChange =
+                toBeUpdated.body === blog.body && !isAnyChange ? false : true;
         }
 
         if (Object.keys(toBeUpdated).length < 1) {
@@ -294,7 +294,6 @@ async function getBlogs(_skip, _take) {
 
         return relevantBlogs;
     } catch (error) {
-        console.log(error);
         throwCatchError(error);
     }
 }
@@ -404,8 +403,8 @@ function validateUpdateBlog(updateBlog) {
     }
 
     if (
-        !updateBlog.hasOwnProperty("take") ||
-        !updateBlog.hasOwnProperty("skip")
+        !updateBlog.hasOwnProperty("title") &&
+        !updateBlog.hasOwnProperty("body")
     ) {
         throwError(
             ErrorCode.BAD_REQUEST,
