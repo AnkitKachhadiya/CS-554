@@ -76,6 +76,18 @@ function isNonSpaceString(string, variableName) {
     }
 }
 
+function isStringNumeric(string, variableName) {
+    //should match numeric characters
+    const numericRegex = /[^0-9]/;
+
+    if (numericRegex.test(string)) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${variableName} should have only numeric characters.`
+        );
+    }
+}
+
 function isTotalFieldsValid(totalFields, totalMandatoryFields) {
     if (totalFields !== totalMandatoryFields) {
         throwError(ErrorCode.BAD_REQUEST, "Error: You must supply all fields.");
@@ -100,6 +112,13 @@ function isRequestBodyPresent(total) {
 function isStringValidInteger(string, variableName) {
     isArgumentString(string, variableName);
     isStringEmpty(string, variableName);
+
+    if (isNaN(string)) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${variableName || "Provided variable"} must be a number.`
+        );
+    }
 
     const number = parseInt(string, 10);
 
@@ -147,6 +166,7 @@ module.exports = {
     isStringEmpty,
     isStringAlphaSpace,
     isStringAlphaNumeric,
+    isStringNumeric,
     isNonSpaceString,
     isStringLengthValid,
     isTotalFieldsValid,

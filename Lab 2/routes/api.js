@@ -6,6 +6,9 @@ const ErrorCode = require("../helpers/error-code");
 
 const xss = require("xss");
 
+const data = require("../data");
+const peopleData = data.people;
+
 const redis = require("redis");
 const redisClient = redis.createClient();
 
@@ -13,21 +16,52 @@ const redisClient = redis.createClient();
     await redisClient.connect();
 })();
 
-const data = require("../data");
-const peopleData = data.people;
+const SUCCESS_CODE = 200;
 
 router.get("/people/history", async (request, response) => {
-    const history = await redisClient.get("history");
+    try {
+        const history = await redisClient.get("history");
 
-    const accessHistory = history === null ? [] : JSON.parse(history);
+        const accessHistory = history === null ? [] : JSON.parse(history);
 
-    response.json(accessHistory);
+        response.status(SUCCESS_CODE).json(accessHistory);
+    } catch (error) {
+        response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
+            serverResponse: error.message || "Error: Internal server error.",
+        });
+    }
 });
 
 router.get("/people/:id", async (request, response) => {
     try {
-        const person = await peopleData.getById(request.params.id);
+        const id = validator.isIdValid(xss(request.params.id), "id");
 
+        const cachedPerson = await redisClient.get(`person.id.${id}`);
+
+        if (cachedPerson !== null) {
+            const jsonCachedPerson = JSON.parse(cachedPerson);
+
+            await addToAccessHistory(jsonCachedPerson);
+
+            return response.status(SUCCESS_CODE).json(jsonCachedPerson);
+        }
+
+        const person = await peopleData.getById(id);
+
+        await redisClient.set(`person.id.${person.id}`, JSON.stringify(person));
+
+        await addToAccessHistory(person);
+
+        return response.status(SUCCESS_CODE).json(person);
+    } catch (error) {
+        response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
+            serverResponse: error.message || "Error: Internal server error.",
+        });
+    }
+});
+
+async function addToAccessHistory(person) {
+    try {
         const history = await redisClient.get("history");
 
         if (history === null) {
@@ -37,15 +71,17 @@ router.get("/people/:id", async (request, response) => {
 
             jsonHistory.unshift(person);
 
+            //should have only latest 20 people
+            jsonHistory.splice(20);
+
             await redisClient.set("history", JSON.stringify(jsonHistory));
         }
     } catch (error) {
-        console.log(error);
         response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
             serverResponse: error.message || "Error: Internal server error.",
         });
     }
-});
+}
 
 const throwError = (code = 500, message = "Error: Internal Server Error") => {
     throw { code, message };
