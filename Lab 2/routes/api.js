@@ -24,7 +24,9 @@ router.get("/people/history", async (request, response) => {
 
         const accessHistory = history === null ? [] : JSON.parse(history);
 
-        response.status(SUCCESS_CODE).json(accessHistory);
+        const first20People = accessHistory.slice(0, 20);
+
+        response.status(SUCCESS_CODE).json(first20People);
     } catch (error) {
         response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
             serverResponse: error.message || "Error: Internal server error.",
@@ -70,9 +72,6 @@ async function addToAccessHistory(person) {
             const jsonHistory = JSON.parse(history);
 
             jsonHistory.unshift(person);
-
-            //should have only latest 20 people
-            jsonHistory.splice(20);
 
             await redisClient.set("history", JSON.stringify(jsonHistory));
         }
