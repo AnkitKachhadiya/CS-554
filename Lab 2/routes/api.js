@@ -20,17 +20,11 @@ const SUCCESS_CODE = 200;
 
 router.get("/people/history", async (request, response) => {
     try {
-        const history = await redisClient.lRange("history", 0, 19);
+        const history = await redisClient.get("history");
 
-        if (history.length < 1 || !history.length || !history) {
-            return response.status(SUCCESS_CODE).json([]);
-        }
+        const accessHistory = history === null ? [] : JSON.parse(history);
 
-        const accessHistoryPeople = await redisClient.mGet(history);
-
-        const first20People = accessHistoryPeople.map((person) =>
-            JSON.parse(person)
-        );
+        const first20People = accessHistory.slice(0, 20);
 
         response.status(SUCCESS_CODE).json(first20People);
     } catch (error) {
@@ -44,23 +38,21 @@ router.get("/people/:id", async (request, response) => {
     try {
         const id = validator.isIdValid(xss(request.params.id), "id");
 
-        const personUniqueKey = `person.id.${id}`;
-
-        const cachedPerson = await redisClient.get(personUniqueKey);
+        const cachedPerson = await redisClient.get(`person.id.${id}`);
 
         if (cachedPerson !== null) {
             const jsonCachedPerson = JSON.parse(cachedPerson);
 
-            await addToAccessHistory(personUniqueKey);
+            await addToAccessHistory(jsonCachedPerson);
 
             return response.status(SUCCESS_CODE).json(jsonCachedPerson);
         }
 
         const person = await peopleData.getById(id);
 
-        await redisClient.set(personUniqueKey, JSON.stringify(person));
+        await redisClient.set(`person.id.${person.id}`, JSON.stringify(person));
 
-        await addToAccessHistory(personUniqueKey);
+        await addToAccessHistory(person);
 
         return response.status(SUCCESS_CODE).json(person);
     } catch (error) {
@@ -70,9 +62,19 @@ router.get("/people/:id", async (request, response) => {
     }
 });
 
-async function addToAccessHistory(personUniqueKey) {
+async function addToAccessHistory(person) {
     try {
-        await redisClient.lPush("history", personUniqueKey);
+        const history = await redisClient.get("history");
+
+        if (history === null) {
+            await redisClient.set("history", JSON.stringify([person]));
+        } else {
+            const jsonHistory = JSON.parse(history);
+
+            jsonHistory.unshift(person);
+
+            await redisClient.set("history", JSON.stringify(jsonHistory));
+        }
     } catch (error) {
         response.status(error.code || ErrorCode.INTERNAL_SERVER_ERROR).send({
             serverResponse: error.message || "Error: Internal server error.",
