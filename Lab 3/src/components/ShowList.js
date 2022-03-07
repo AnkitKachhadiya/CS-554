@@ -11,10 +11,10 @@ import {
     Grid,
     Typography,
     makeStyles,
-    Button,
 } from "@material-ui/core";
 
 import "../App.css";
+import Pagination from "./Pagination";
 const useStyles = makeStyles({
     card: {
         maxWidth: 250,
@@ -82,7 +82,7 @@ const ShowList = (props) => {
             }
         }
         fetchData();
-    }, []);
+    }, [isPageUsed]);
 
     useEffect(() => {
         async function fetchData() {
@@ -101,23 +101,6 @@ const ShowList = (props) => {
         }
     }, [searchTerm]);
 
-    async function getCurrentPageData() {
-        const pageData = await getPageData(pageNumber);
-
-        setLoading(false);
-        if (pageData) {
-            setShowsData(pageData);
-        } else {
-            setIsError(true);
-        }
-    }
-
-    async function getNextPageData() {
-        const pageData = await getPageData(pageNumber + 1);
-
-        pageData ? setIsLastPage(false) : setIsLastPage(true);
-    }
-
     async function getPageData(pageNumber) {
         try {
             const { data } = await axios.get(`${API_URL}?page=${pageNumber}`);
@@ -130,6 +113,23 @@ const ShowList = (props) => {
     useEffect(() => {
         if (!isPageUsed) {
             return;
+        }
+
+        async function getCurrentPageData() {
+            const pageData = await getPageData(pageNumber);
+
+            setLoading(false);
+            if (pageData) {
+                setShowsData(pageData);
+            } else {
+                setIsError(true);
+            }
+        }
+
+        async function getNextPageData() {
+            const pageData = await getPageData(pageNumber + 1);
+
+            pageData ? setIsLastPage(false) : setIsLastPage(true);
         }
 
         getCurrentPageData();
@@ -226,44 +226,40 @@ const ShowList = (props) => {
                 <h2>Loading....</h2>
             </div>
         );
-    } else {
-        return (
-            <div>
-                <SearchShows searchValue={searchValue} />
-                <br />
-                <br />
-                {!isFirstPage && (
-                    <Button
-                        component={Link}
-                        to={`/shows/page/${pageNumber - 1}`}
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={previousHandler}
-                    >
-                        Previous Page
-                    </Button>
-                )}{" "}
-                {!isLastPage && (
-                    <Button
-                        component={Link}
-                        to={`/shows/page/${pageNumber + 1}`}
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={nextHandler}
-                    >
-                        Next Page
-                    </Button>
-                )}
-                <br />
-                <br />
-                <Grid container className={classes.grid} spacing={5}>
-                    {card}
-                </Grid>
-            </div>
-        );
     }
+
+    return (
+        <div>
+            <SearchShows searchValue={searchValue} />
+            <br />
+            <br />
+            {!searchTerm && (
+                <Pagination
+                    previousHandler={previousHandler}
+                    nextHandler={nextHandler}
+                    pageCount={pageNumber}
+                    isFirstPage={isFirstPage}
+                    isLastPage={isLastPage}
+                />
+            )}
+            <br />
+            <br />
+            <Grid container className={classes.grid} spacing={5}>
+                {card}
+            </Grid>
+            <br />
+            <br />
+            {!searchTerm && (
+                <Pagination
+                    previousHandler={previousHandler}
+                    nextHandler={nextHandler}
+                    pageCount={pageNumber}
+                    isFirstPage={isFirstPage}
+                    isLastPage={isLastPage}
+                />
+            )}
+        </div>
+    );
 };
 
 export default ShowList;
