@@ -53,14 +53,25 @@ const ShowList = (props) => {
     const [showsData, setShowsData] = useState(undefined);
     const [searchTerm, setSearchTerm] = useState("");
     const [pageNumber, setPageNumber] = useState(
-        isNaN(propsPageNumber) ? 1 : propsPageNumber
+        isNaN(propsPageNumber) ? 0 : propsPageNumber
     );
     const [isPageUsed, setIsPageUsed] = useState(
         propsPageNumber ? true : false
     );
+    const [isLastPage, setIsLastPage] = useState(false);
+    const [isFirstPage, setIsFirstPage] = useState(
+        pageNumber < 1 ? true : false
+    );
+    const [isError, setIsError] = useState(false);
+
     let card = null;
+    const API_URL = "http://api.tvmaze.com/shows";
 
     useEffect(() => {
+        if (isPageUsed) {
+            return;
+        }
+
         async function fetchData() {
             try {
                 const { data } = await axios.get("http://api.tvmaze.com/shows");
@@ -90,13 +101,40 @@ const ShowList = (props) => {
         }
     }, [searchTerm]);
 
+    async function getCurrentPageData() {
+        const pageData = await getPageData(pageNumber);
+
+        setLoading(false);
+        if (pageData) {
+            setShowsData(pageData);
+        } else {
+            setIsError(true);
+        }
+    }
+
+    async function getNextPageData() {
+        const pageData = await getPageData(pageNumber + 1);
+
+        pageData ? setIsLastPage(false) : setIsLastPage(true);
+    }
+
+    async function getPageData(pageNumber) {
+        try {
+            const { data } = await axios.get(`${API_URL}?page=${pageNumber}`);
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         if (!isPageUsed) {
             return;
         }
 
-        console.log(isPageUsed);
-    }, [isPageUsed]);
+        getCurrentPageData();
+        getNextPageData();
+    }, [isPageUsed, pageNumber]);
 
     const searchValue = async (value) => {
         setSearchTerm(value);
@@ -147,6 +185,18 @@ const ShowList = (props) => {
         );
     };
 
+    function previousHandler() {
+        setPageNumber(pageNumber - 1);
+        pageNumber > 1 ? setIsFirstPage(false) : setIsFirstPage(true);
+        setIsPageUsed(true);
+    }
+
+    function nextHandler() {
+        setPageNumber(pageNumber + 1);
+        pageNumber >= 0 ? setIsFirstPage(false) : setIsFirstPage(true);
+        setIsPageUsed(true);
+    }
+
     if (searchTerm) {
         card =
             searchData &&
@@ -162,6 +212,14 @@ const ShowList = (props) => {
             });
     }
 
+    if (isError) {
+        return (
+            <div>
+                <h2>404 Not Found</h2>
+            </div>
+        );
+    }
+
     if (loading) {
         return (
             <div>
@@ -174,24 +232,30 @@ const ShowList = (props) => {
                 <SearchShows searchValue={searchValue} />
                 <br />
                 <br />
-                <Button
-                    component={Link}
-                    to={`/shows/page/${pageNumber}`}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                >
-                    Previous Page
-                </Button>{" "}
-                <Button
-                    component={Link}
-                    to={`/shows/page/${pageNumber}`}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                >
-                    Next Page
-                </Button>
+                {!isFirstPage && (
+                    <Button
+                        component={Link}
+                        to={`/shows/page/${pageNumber - 1}`}
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={previousHandler}
+                    >
+                        Previous Page
+                    </Button>
+                )}{" "}
+                {!isLastPage && (
+                    <Button
+                        component={Link}
+                        to={`/shows/page/${pageNumber + 1}`}
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={nextHandler}
+                    >
+                        Next Page
+                    </Button>
+                )}
                 <br />
                 <br />
                 <Grid container className={classes.grid} spacing={5}>
