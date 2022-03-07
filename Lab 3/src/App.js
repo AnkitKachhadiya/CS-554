@@ -4,7 +4,7 @@ import "./App.css";
 import ShowList from "./components/ShowList";
 import Show from "./components/Show";
 import Home from "./components/Home";
-import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 const App = () => {
     return (
@@ -25,11 +25,14 @@ const App = () => {
                 <br />
                 <br />
                 <div className="App-body">
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/shows" element={<ShowList />} />
-                        <Route path="/shows/:id" element={<Show />} />
-                    </Routes>
+                    <Route exact path="/" component={Home} />
+                    <Route exact path="/shows" component={ShowList} />
+                    <Route exact path="/shows/:id" component={Show} />
+                    <Route
+                        exact
+                        path="/shows/page/:pageNumber"
+                        component={ShowList}
+                    />
                 </div>
             </div>
         </Router>

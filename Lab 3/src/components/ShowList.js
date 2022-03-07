@@ -11,6 +11,7 @@ import {
     Grid,
     Typography,
     makeStyles,
+    Button,
 } from "@material-ui/core";
 
 import "../App.css";
@@ -43,17 +44,23 @@ const useStyles = makeStyles({
         fontSize: 12,
     },
 });
-const ShowList = () => {
+const ShowList = (props) => {
+    const propsPageNumber = parseInt(props.match.params.pageNumber);
     const regex = /(<([^>]+)>)/gi;
     const classes = useStyles();
     const [loading, setLoading] = useState(true);
     const [searchData, setSearchData] = useState(undefined);
     const [showsData, setShowsData] = useState(undefined);
     const [searchTerm, setSearchTerm] = useState("");
+    const [pageNumber, setPageNumber] = useState(
+        isNaN(propsPageNumber) ? 1 : propsPageNumber
+    );
+    const [isPageUsed, setIsPageUsed] = useState(
+        propsPageNumber ? true : false
+    );
     let card = null;
 
     useEffect(() => {
-        console.log("on load use effect");
         async function fetchData() {
             try {
                 const { data } = await axios.get("http://api.tvmaze.com/shows");
@@ -67,10 +74,8 @@ const ShowList = () => {
     }, []);
 
     useEffect(() => {
-        console.log("search useEffect fired");
         async function fetchData() {
             try {
-                console.log(`in fetch searchTerm: ${searchTerm}`);
                 const { data } = await axios.get(
                     "http://api.tvmaze.com/search/shows?q=" + searchTerm
                 );
@@ -81,10 +86,17 @@ const ShowList = () => {
             }
         }
         if (searchTerm) {
-            console.log("searchTerm is set");
             fetchData();
         }
     }, [searchTerm]);
+
+    useEffect(() => {
+        if (!isPageUsed) {
+            return;
+        }
+
+        console.log(isPageUsed);
+    }, [isPageUsed]);
 
     const searchValue = async (value) => {
         setSearchTerm(value);
@@ -160,6 +172,26 @@ const ShowList = () => {
         return (
             <div>
                 <SearchShows searchValue={searchValue} />
+                <br />
+                <br />
+                <Button
+                    component={Link}
+                    to={`/shows/page/${pageNumber}`}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                >
+                    Previous Page
+                </Button>{" "}
+                <Button
+                    component={Link}
+                    to={`/shows/page/${pageNumber}`}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                >
+                    Next Page
+                </Button>
                 <br />
                 <br />
                 <Grid container className={classes.grid} spacing={5}>
