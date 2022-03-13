@@ -1,8 +1,8 @@
 import React from "react";
 import useAxios from "../hooks/useAxios";
 
-function Comics() {
-    const { response, error, isLoading } = useAxios("comics");
+function SingleCharacter() {
+    const { response, error, isLoading } = useAxios("characters");
 
     if (isLoading) {
         return (
@@ -15,7 +15,7 @@ function Comics() {
     return (
         <>
             <div>
-                <h1>Comics</h1>
+                <h1>Single Character</h1>
                 <p>{error}</p>
                 <p>{JSON.stringify(response)}</p>
             </div>
@@ -23,4 +23,4 @@ function Comics() {
     );
 }
 
-export default Comics;
+export default SingleCharacter;
