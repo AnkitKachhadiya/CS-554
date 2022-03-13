@@ -1,5 +1,7 @@
 import React from "react";
 import useAxios from "../hooks/useAxios";
+import { Container, Spinner } from "react-bootstrap";
+import AllCards from "./AllCards";
 
 function Series() {
     const { response, error, isLoading } = useAxios("series");
@@ -7,18 +9,28 @@ function Series() {
     if (isLoading) {
         return (
             <>
-                <h1>Loading...</h1>
+                <h1 className="text-center mt-5 mb-5">MARVEL SERIES</h1>
+                <div className="text-center mt-5">
+                    <Spinner animation="grow" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </div>
             </>
         );
     }
 
     return (
         <>
-            <div>
-                <h1>Series</h1>
-                <p>{error}</p>
-                <p>{JSON.stringify(response)}</p>
-            </div>
+            <h1 className="text-center mt-5 mb-5">MARVEL SERIES</h1>
+            <Container fluid>
+                {response && response.data && response.data.results && (
+                    <AllCards
+                        data={response.data.results}
+                        listingType="series"
+                    />
+                )}
+            </Container>
+            {error && <p>{error}</p>}
         </>
     );
 }
