@@ -9,3 +9,31 @@
     transform: translate3d(0, -2%, 0);
     color: #e62429 !important;
 }
+
+.main-image {
+    filter: brightness(60%);
+    width: 100%;
+}
+
+.main-text {
+    color: #949494;
+    position: absolute;
+    top: 10%;
+    height: 100%;
+}
+
+.main-wrapper {
+    position: relative;
+    text-align: center;
+}
+
+.main-title {
+    font-size: 44px;
+}
+
+.side-text {
+    font-size: 18px;
+    padding-right: 25%;
+    padding-left: 25%;
+    color: #767676;
+}

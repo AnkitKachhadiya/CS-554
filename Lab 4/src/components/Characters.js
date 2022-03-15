@@ -68,20 +68,20 @@ function Characters() {
     return (
         <>
             <h1 className="text-center mt-5 mb-5">MARVEL CHARACTERS</h1>
-            <Container fluid>
+            <Container fluid className="px-5">
                 {isResponseAvailable && (
                     <AllCards
                         data={response.data.results}
                         listingType="characters"
                     />
                 )}
+                {isResponseAvailable && (
+                    <Pagination className="justify-content-center">
+                        {getPageItems()}
+                    </Pagination>
+                )}
             </Container>
             {error && <p>{error}</p>}
-            {isResponseAvailable && (
-                <Pagination className="justify-content-center">
-                    {getPageItems()}
-                </Pagination>
-            )}
         </>
     );
 }

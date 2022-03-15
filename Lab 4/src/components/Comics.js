@@ -22,7 +22,7 @@ function Comics() {
     return (
         <>
             <h1 className="text-center mt-5 mb-5">MARVEL COMICS</h1>
-            <Container fluid>
+            <Container fluid className="px-5">
                 {response && response.data && response.data.results && (
                     <AllCards
                         data={response.data.results}
