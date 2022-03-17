@@ -41,3 +41,36 @@
 .Mui-selected {
     background-color: #e62429 !important;
 }
+
+.btn-marvel {
+    color: #fff;
+    background-color: #e62429;
+    border-color: #e62429;
+}
+
+.btn-marvel:focus {
+    color: #fff;
+    background-color: #e62429;
+    border-color: #e624297d;
+    box-shadow: 0 0 0 0.25rem rgb(230 36 41 / 33%);
+}
+
+.btn-marvel:hover {
+    background-color: #e62429;
+    border-color: #e624297d;
+}
+
+.marvel-form-control:focus {
+    border-color: #e624297d;
+    box-shadow: 0 0 0 0.25rem rgb(230 36 41 / 33%);
+}
+
+.marvel-form-control {
+    text-transform: uppercase;
+    font-weight: 500;
+    max-width: 60%;
+}
+
+.marvel-input-group {
+    padding-left: 25%;
+}

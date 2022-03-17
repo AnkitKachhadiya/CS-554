@@ -27,6 +27,7 @@ function AllCards({ data, listingType }) {
                             listingType={listingType}
                             id={currentElement.id}
                             url={`${currentElement.thumbnail.path}/${imageType}.${currentElement.thumbnail.extension}`}
+                            fallbackUrl={`${currentElement.thumbnail.path}.${currentElement.thumbnail.extension}`}
                             title={currentElement[titleKey]}
                         />
                     </Col>

@@ -18,7 +18,7 @@ function NavigationBar() {
             <BrowserRouter>
                 <Navbar bg="dark" variant="dark">
                     <Container>
-                        <Navbar.Brand as={Link} to="/">
+                        <Navbar.Brand as={Link} to="/" aria-label="Marvel Logo">
                             <svg
                                 width="130"
                                 height="52"

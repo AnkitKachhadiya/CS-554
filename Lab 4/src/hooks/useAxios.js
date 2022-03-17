@@ -37,6 +37,7 @@ function useAxios(listingType, limit, _searchTerm = "", offset = 0) {
                 setResponse(data);
                 setError(null);
             } catch (error) {
+                console.log(error);
                 setError(error);
             } finally {
                 setIsLoading(false);
