@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import useAxios from "../hooks/useAxios";
-import { Container, Spinner, Pagination } from "react-bootstrap";
+import { Container, Spinner } from "react-bootstrap";
 import AllCards from "./AllCards";
 import { useParams, useNavigate } from "react-router-dom";
+import Pagination from "./PaginationComponent";
 
 const TOTAL_ITEMS_PER_PAGE = 36;
 
 function Characters() {
     const navigate = useNavigate();
     const { page } = useParams();
+    const [currentPage, setCurrentPage] = useState(parseInt(page));
 
     const offset = page * TOTAL_ITEMS_PER_PAGE;
 
@@ -39,30 +41,10 @@ function Characters() {
 
     const totalPages = Math.ceil(totalItems / TOTAL_ITEMS_PER_PAGE);
 
-    function changePage(pageNumber) {
-        const path = `/characters/page/${pageNumber}`;
+    function changeHandler(event, pageNumber) {
+        setCurrentPage(pageNumber - 1);
+        const path = `/characters/page/${pageNumber - 1}`;
         navigate(path);
-    }
-
-    function getPageItems() {
-        const pageItems = [];
-
-        for (
-            let currentNumber = 0;
-            currentNumber < totalPages;
-            currentNumber++
-        ) {
-            pageItems.push(
-                <Pagination.Item
-                    key={currentNumber}
-                    onClick={() => changePage(currentNumber)}
-                >
-                    {currentNumber}
-                </Pagination.Item>
-            );
-        }
-
-        return pageItems;
     }
 
     return (
@@ -76,9 +58,11 @@ function Characters() {
                     />
                 )}
                 {isResponseAvailable && (
-                    <Pagination className="justify-content-center">
-                        {getPageItems()}
-                    </Pagination>
+                    <Pagination
+                        totalPages={totalPages}
+                        currentPage={currentPage + 1}
+                        changeHandler={changeHandler}
+                    />
                 )}
             </Container>
             {error && <p>{error}</p>}

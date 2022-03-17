@@ -37,3 +37,7 @@
     padding-left: 25%;
     color: #767676;
 }
+
+.Mui-selected {
+    background-color: #e62429 !important;
+}
