@@ -21,13 +21,14 @@ function useAxios(listingType, limit, _searchTerm = "", offset = 0) {
     useEffect(() => {
         async function fetchData(listingType, limit, _searchTerm, offset) {
             setIsLoading(true);
+
             try {
                 let searchParameter = "";
 
                 const searchTerm = _searchTerm.trim();
 
                 if (searchTerm.length > 0 && searchTerm) {
-                    searchParameter = `nameStartsWith=${searchTerm}&`;
+                    searchParameter = `${getSearchByTitle()}=${searchTerm}&`;
                 }
 
                 let urlParameters = `${searchParameter}ts=${timestamp}&apikey=${PUBLIC_KEY}&hash=${hash}&limit=${limit}&offset=${offset}`;
@@ -37,10 +38,23 @@ function useAxios(listingType, limit, _searchTerm = "", offset = 0) {
                 setResponse(data);
                 setError(null);
             } catch (error) {
-                console.log(error);
-                setError(error);
+                setError(error.toJSON());
+                setResponse(null);
             } finally {
                 setIsLoading(false);
+            }
+        }
+
+        function getSearchByTitle() {
+            switch (listingType) {
+                case "characters":
+                    return "nameStartsWith";
+                case "comics":
+                    return "titleStartsWith";
+                case "series":
+                    return "titleStartsWith";
+                default:
+                    return "nameStartsWith";
             }
         }
 
