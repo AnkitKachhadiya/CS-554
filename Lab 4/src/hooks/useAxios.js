@@ -13,7 +13,7 @@ const hash = md5(stringToBeHashed);
 
 const BASE_URL = "https://gateway.marvel.com:443/v1/public";
 
-function useAxios(listingType, limit, _searchTerm = "", offset = 0) {
+function useAxiosList(listingType, limit, _searchTerm = "", offset = 0) {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -64,4 +64,34 @@ function useAxios(listingType, limit, _searchTerm = "", offset = 0) {
     return { response, error, isLoading };
 }
 
-export default useAxios;
+function useAxiosSingle(listingType, id) {
+    const [response, setResponse] = useState(null);
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        async function fetchData(listingType, id) {
+            setIsLoading(true);
+
+            try {
+                let urlParameters = `ts=${timestamp}&apikey=${PUBLIC_KEY}&hash=${hash}`;
+
+                const API_URL = `${BASE_URL}/${listingType}/${id}?${urlParameters}`;
+                const { data } = await axios.get(API_URL);
+                setResponse(data);
+                setError(null);
+            } catch (error) {
+                setError(error.toJSON());
+                setResponse(null);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchData(listingType, id);
+    }, [listingType, id]);
+
+    return { response, error, isLoading };
+}
+
+export { useAxiosList, useAxiosSingle };

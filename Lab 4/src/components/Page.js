@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useAxios from "../hooks/useAxios";
+import { useAxiosList } from "../hooks/useAxios";
 import { Container, Button } from "react-bootstrap";
 import AllCards from "./AllCards";
 import { useParams, useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ function Page({ title, listingType }) {
 
     const offset = page * TOTAL_ITEMS_PER_PAGE;
 
-    const { response, error, isLoading } = useAxios(
+    const { response, error, isLoading } = useAxiosList(
         listingType,
         TOTAL_ITEMS_PER_PAGE,
         searchTerm,

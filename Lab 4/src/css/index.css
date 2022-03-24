@@ -74,3 +74,17 @@
 .marvel-input-group {
     padding-left: 25%;
 }
+
+.marvel-black-background {
+    background-color: #151515;
+}
+
+.marvel-link {
+    color: #fff;
+    text-decoration: none;
+}
+
+.marvel-link:hover {
+    color: #e62429;
+    text-decoration: underline;
+}
