@@ -70,7 +70,7 @@ function SingleSeries() {
                                 onError={(event) =>
                                     (event.target.src = `${data.thumbnail.path}.${data.thumbnail.extension}`)
                                 }
-                                alt={data.name}
+                                alt={data.title}
                                 height="550"
                                 width="550"
                             />

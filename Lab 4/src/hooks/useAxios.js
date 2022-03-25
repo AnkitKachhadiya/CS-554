@@ -58,10 +58,23 @@ function useAxiosList(listingType, limit, _searchTerm = "", offset = 0) {
             }
         }
 
+        if (!isOffsetValid(offset)) {
+            setError({ status: 400, message: "Invalid page number." });
+            setResponse(null);
+            setIsLoading(false);
+            return { response, error, isLoading };
+        }
+
         fetchData(listingType, limit, _searchTerm, offset);
     }, [listingType, limit, _searchTerm, offset]);
 
     return { response, error, isLoading };
+}
+
+function isOffsetValid(offset) {
+    const number = Number(offset);
+
+    return isNaN(number) || number < 0 ? false : true;
 }
 
 function useAxiosSingle(listingType, id) {

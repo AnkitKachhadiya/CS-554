@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { InputGroup, FormControl, Button } from "react-bootstrap";
 
-function Search({ searchButtonHandler, searchTerm }) {
+function Search({ searchButtonHandler, searchTerm, placeHolder }) {
     const [searchInput, setSearchInput] = useState(searchTerm);
 
     return (
         <InputGroup className="mb-3 marvel-input-group">
             <FormControl
-                placeholder="Search"
+                placeholder={`Search ${placeHolder}`}
                 aria-label="Search"
                 aria-describedby="search-button"
                 onChange={(event) => {

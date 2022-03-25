@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useAxiosList } from "../hooks/useAxios";
-import { Container, Button } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import AllCards from "./AllCards";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Pagination from "./PaginationComponent";
 import Search from "./Search";
 import Loader from "./Loader";
@@ -12,6 +12,7 @@ const TOTAL_ITEMS_PER_PAGE = 36;
 function Page({ title, listingType }) {
     const navigate = useNavigate();
     const { page } = useParams();
+
     const [currentPage, setCurrentPage] = useState(parseInt(page));
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -65,12 +66,12 @@ function Page({ title, listingType }) {
                             ? error.message
                             : "Data not found"}
                     </h2>
-                    <Button
+                    <Link
                         className="btn btn-primary btn-marvel mt-3 marvel-error-btn"
-                        onClick={() => window.location.reload()}
+                        to={`/${listingType}/page/0`}
                     >
                         Go Back
-                    </Button>
+                    </Link>
                 </div>
             </>
         );
@@ -84,6 +85,7 @@ function Page({ title, listingType }) {
                 <Search
                     searchButtonHandler={searchButtonHandler}
                     searchTerm={searchTerm}
+                    placeHolder={listingType}
                 />
                 {isResponseAvailable && response && (
                     <>
