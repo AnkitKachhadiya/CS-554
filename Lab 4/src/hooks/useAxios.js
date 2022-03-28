@@ -58,7 +58,7 @@ function useAxiosList(listingType, limit, _searchTerm = "", offset = 0) {
             }
         }
 
-        if (!isOffsetValid(offset)) {
+        if (!isNumberValid(offset)) {
             setError({ status: 400, message: "Invalid page number." });
             setResponse(null);
             setIsLoading(false);
@@ -71,8 +71,8 @@ function useAxiosList(listingType, limit, _searchTerm = "", offset = 0) {
     return { response, error, isLoading };
 }
 
-function isOffsetValid(offset) {
-    const number = Number(offset);
+function isNumberValid(_number) {
+    const number = Number(_number);
 
     return isNaN(number) || number < 0 ? false : true;
 }
@@ -99,6 +99,13 @@ function useAxiosSingle(listingType, id) {
             } finally {
                 setIsLoading(false);
             }
+        }
+
+        if (!isNumberValid(id)) {
+            setError({ status: 400, message: "Invalid id." });
+            setResponse(null);
+            setIsLoading(false);
+            return { response, error, isLoading };
         }
 
         fetchData(listingType, id);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAxiosList } from "../hooks/useAxios";
 import { Container } from "react-bootstrap";
 import AllCards from "./AllCards";
@@ -24,6 +24,10 @@ function Page({ title, listingType }) {
         searchTerm,
         offset
     );
+
+    useEffect(() => {
+        setCurrentPage(parseInt(page));
+    }, [page]);
 
     if (isLoading) {
         return <Loader title={title} />;
