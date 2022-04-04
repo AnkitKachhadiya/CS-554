@@ -1,14 +1,26 @@
 import { useQuery } from "@apollo/client";
 import { GET_UNSPLASH_IMAGES } from "../queries";
+import { Loader } from "./styles/Loader.styled";
+import Cards from "./Cards";
 
 function Images() {
     const { data, loading, error } = useQuery(GET_UNSPLASH_IMAGES);
 
-    if (data) {
-        console.log(data);
+    if (loading) {
+        return <Loader />;
     }
 
-    return <h1>Images</h1>;
+    if (data) {
+        return (
+            <>
+                {data &&
+                    data.unsplashImages &&
+                    data.unsplashImages.length > 0 && (
+                        <Cards data={data.unsplashImages} />
+                    )}
+            </>
+        );
+    }
 }
 
 export default Images;
