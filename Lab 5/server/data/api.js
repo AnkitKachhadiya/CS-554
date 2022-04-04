@@ -7,7 +7,7 @@ async function getUnsplashImages(pageNum = 0) {
     try {
         const PER_PAGE = 30;
 
-        const API_URL = `${BASE_URL}/photos?per_page=${PER_PAGE}&page=${pageNum}order_by=popular&client_id=${ACCESS_KEY}`;
+        const API_URL = `${BASE_URL}/photos?per_page=${PER_PAGE}&page=${pageNum}&order_by=popular&client_id=${ACCESS_KEY}`;
 
         const { data } = await axios.get(API_URL);
 

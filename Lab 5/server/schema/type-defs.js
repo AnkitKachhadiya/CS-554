@@ -24,7 +24,11 @@ const typeDefs = gql`
     type Query {
         "Get images from unsplash API"
         unsplashImages(pageNum: Int): [ImagePost]
+
+        "Get binned images"
         binnedImages: [ImagePost]
+
+        "Get posted images"
         userPostedImages: [ImagePost]
     }
 `;

@@ -1,5 +1,17 @@
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import Images from "./components/Images";
+
+const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    uri: "http://localhost:4000",
+});
+
 function App() {
-    return <h1> Hello World</h1>;
+    return (
+        <ApolloProvider client={client}>
+            <Images />
+        </ApolloProvider>
+    );
 }
 
 export default App;
