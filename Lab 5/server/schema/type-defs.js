@@ -31,6 +31,20 @@ const typeDefs = gql`
         "Get posted images"
         userPostedImages: [ImagePost]
     }
+
+    input UpdateImageInput {
+        id: ID!
+        url: String!
+        posterName: String!
+        description: String
+        userPosted: Boolean!
+        binned: Boolean!
+    }
+
+    type Mutation {
+        updateImage(input: UpdateImageInput!): ImagePost
+        deleteImage(id: ID!): ImagePost
+    }
 `;
 
 module.exports = { typeDefs };

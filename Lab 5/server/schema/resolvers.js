@@ -1,5 +1,10 @@
 const { getUnsplashImages } = require("../data/api");
-const { getUserPostedImages, getBinnedImages } = require("../data/redis-db");
+const {
+    getUserPostedImages,
+    getBinnedImages,
+    updateImage,
+    isImagePostBinned,
+} = require("../data/redis-db");
 
 const data = [
     {
@@ -284,10 +289,22 @@ const resolvers = {
             return unsplashImages;
         },
         binnedImages: async () => {
-            return await getBinnedImages();
+            const binnedImages = await getBinnedImages();
+            return binnedImages;
         },
         userPostedImages: async () => {
             return await getUserPostedImages();
+        },
+    },
+    ImagePost: {
+        binned: async (parentValue) => {
+            return await isImagePostBinned(parentValue.id);
+        },
+    },
+    Mutation: {
+        updateImage: async (_, { input }) => {
+            await updateImage(input);
+            return input;
         },
     },
 };
