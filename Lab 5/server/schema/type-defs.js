@@ -32,6 +32,12 @@ const typeDefs = gql`
         userPostedImages: [ImagePost]
     }
 
+    input UploadImageInput {
+        url: String!
+        description: String
+        posterName: String!
+    }
+
     input UpdateImageInput {
         id: ID!
         url: String!
@@ -42,6 +48,7 @@ const typeDefs = gql`
     }
 
     type Mutation {
+        uploadImage(input: UploadImageInput): ImagePost
         updateImage(input: UpdateImageInput!): ImagePost
         deleteImage(id: ID!): ImagePost
     }

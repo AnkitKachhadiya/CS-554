@@ -4,6 +4,8 @@ const {
     getBinnedImages,
     updateImage,
     isImagePostBinned,
+    deletePostedImage,
+    uploadImagePost,
 } = require("../data/redis-db");
 
 const data = [
@@ -293,7 +295,8 @@ const resolvers = {
             return binnedImages;
         },
         userPostedImages: async () => {
-            return await getUserPostedImages();
+            const postedImages = await getUserPostedImages();
+            return postedImages;
         },
     },
     ImagePost: {
@@ -305,6 +308,13 @@ const resolvers = {
         updateImage: async (_, { input }) => {
             await updateImage(input);
             return input;
+        },
+        deleteImage: async (_, { id }) => {
+            await deletePostedImage(id);
+            return null;
+        },
+        uploadImage: async (_, { input }) => {
+            return await uploadImagePost(input);
         },
     },
 };
