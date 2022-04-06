@@ -43,7 +43,7 @@ export const CardBody = styled.div`
 `;
 
 export const CardText = styled.div`
-    display: inline-block;
+    padding-right: 10px;
 
     p {
         margin: 0;
@@ -58,9 +58,7 @@ export const CardText = styled.div`
     }
 `;
 
-export const CardButton = styled.div`
-    float: right;
-`;
+export const CardButton = styled.div``;
 
 export const CardContainer = styled.div`
     width: 50%;
@@ -68,7 +66,7 @@ export const CardContainer = styled.div`
 `;
 
 export const StyledButton = styled.button`
-    background-color: #e60023;
+    background-color: ${({ bg }) => bg || "#e60023"};
     box-sizing: border-box;
     position: relative;
     user-select: none;
@@ -94,4 +92,9 @@ export const StyledButton = styled.button`
     color: #fff;
     font-family: ${({ theme }) => theme.fonts};
     box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
+`;
+
+export const LoadMoreContainer = styled.div`
+    text-align: center;
+    margin: 25px 0;
 `;
