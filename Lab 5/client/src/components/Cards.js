@@ -9,7 +9,7 @@ import {
     StyledButton,
 } from "./styles/Card.styled";
 
-function Cards({ data }) {
+function Cards({ data, handleAddToBin, handleRemoveFromBin }) {
     return (
         <CardContainer>
             {data.map((image) => (
@@ -26,7 +26,22 @@ function Cards({ data }) {
                             </p>
                         </CardText>
                         <CardButton>
-                            <StyledButton>Add to bin</StyledButton>
+                            {image.binned ? (
+                                <StyledButton
+                                    bg="#424242"
+                                    onClick={() =>
+                                        handleRemoveFromBin(image.id)
+                                    }
+                                >
+                                    Remove from bin
+                                </StyledButton>
+                            ) : (
+                                <StyledButton
+                                    onClick={() => handleAddToBin(image.id)}
+                                >
+                                    Add to bin
+                                </StyledButton>
+                            )}
                         </CardButton>
                     </CardBody>
                 </Card>

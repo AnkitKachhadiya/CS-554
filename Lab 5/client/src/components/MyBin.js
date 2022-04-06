@@ -1,25 +1,22 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_UNSPLASH_IMAGES, UPDATE_IMAGE } from "../queries";
+import { GET_BINNED_IMAGES, UPDATE_IMAGE } from "../queries";
 import { Loader } from "./styles/Loader.styled";
-import { StyledButton, LoadMoreContainer } from "./styles/Card.styled";
-import { useTheme } from "styled-components";
 import Cards from "./Cards";
 import { useState } from "react";
 
-function Images() {
-    const theme = useTheme();
-    const [currentPageNumber, setCurrentPageNumber] = useState(1);
-    const [myImages, setMyImages] = useState([]);
-    const { loading } = useQuery(GET_UNSPLASH_IMAGES, {
-        variables: { pageNum: currentPageNumber },
+function MyBin() {
+    const [myBinnedImages, setMyBinnedImages] = useState([]);
+    const { data, loading, refetch } = useQuery(GET_BINNED_IMAGES, {
         onCompleted: (data) => {
-            data.unsplashImages &&
-                setMyImages(myImages.concat(data.unsplashImages));
+            data.binnedImages
+                ? setMyBinnedImages(data.binnedImages)
+                : setMyBinnedImages([]);
         },
         fetchPolicy: "network-only",
         notifyOnNetworkStatusChange: true,
     });
-    const [updateImage] = useMutation(UPDATE_IMAGE);
+
+    const [updateImage] = useMutation(UPDATE_IMAGE, { onCompleted: refetch });
 
     if (loading) {
         return <Loader />;
@@ -34,11 +31,9 @@ function Images() {
     }
 
     function updateBinnedStatus(id, binStatus) {
-        const image = myImages.find((currentImage) => {
+        const image = myBinnedImages.find((currentImage) => {
             return currentImage.id === id;
         });
-
-        image.binned = binStatus;
 
         updateImage({
             variables: {
@@ -54,29 +49,19 @@ function Images() {
         });
     }
 
-    if (myImages) {
+    if (data) {
         return (
             <>
-                {myImages && myImages.length > 0 && (
+                {myBinnedImages && myBinnedImages.length > 0 && (
                     <Cards
-                        data={myImages}
+                        data={myBinnedImages}
                         handleAddToBin={handleAddToBin}
                         handleRemoveFromBin={handleRemoveFromBin}
                     />
                 )}
-                <LoadMoreContainer>
-                    <StyledButton
-                        bg={theme.colors.primary}
-                        onClick={() =>
-                            setCurrentPageNumber(currentPageNumber + 1)
-                        }
-                    >
-                        Load More
-                    </StyledButton>
-                </LoadMoreContainer>
             </>
         );
     }
 }
 
-export default Images;
+export default MyBin;
