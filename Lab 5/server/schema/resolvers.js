@@ -293,7 +293,6 @@ const resolvers = {
         },
         binnedImages: async () => {
             const binnedImages = await getBinnedImages();
-            console.log(binnedImages);
             return binnedImages;
         },
         userPostedImages: async () => {
@@ -307,16 +306,33 @@ const resolvers = {
         },
     },
     Mutation: {
-        updateImage: async (_, { input }) => {
-            await updateImage(input);
-            return input;
+        updateImage: async (
+            _,
+            { id, url, posterName, description, userPosted, binned }
+        ) => {
+            await updateImage({
+                id,
+                url,
+                posterName,
+                description,
+                userPosted,
+                binned,
+            });
+            return {
+                id,
+                url,
+                posterName,
+                description,
+                userPosted,
+                binned,
+            };
         },
         deleteImage: async (_, { id }) => {
             await deletePostedImage(id);
             return null;
         },
-        uploadImage: async (_, { input }) => {
-            return await uploadImagePost(input);
+        uploadImage: async (_, { url, description, posterName }) => {
+            return await uploadImagePost({ url, description, posterName });
         },
     },
 };

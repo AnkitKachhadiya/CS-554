@@ -27,8 +27,22 @@ export const GET_BINNED_IMAGES = gql`
 `;
 
 export const UPDATE_IMAGE = gql`
-    mutation UpdateImage($input: UpdateImageInput!) {
-        updateImage(input: $input) {
+    mutation UpdateImage(
+        $id: ID!
+        $url: String
+        $posterName: String
+        $description: String
+        $userPosted: Boolean
+        $binned: Boolean
+    ) {
+        updateImage(
+            id: $id
+            url: $url
+            posterName: $posterName
+            description: $description
+            userPosted: $userPosted
+            binned: $binned
+        ) {
             id
         }
     }

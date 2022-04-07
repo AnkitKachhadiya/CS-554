@@ -42,14 +42,12 @@ function Images() {
 
         updateImage({
             variables: {
-                input: {
-                    id: image.id,
-                    url: image.url,
-                    posterName: image.posterName,
-                    description: image.description,
-                    userPosted: image.userPosted,
-                    binned: binStatus,
-                },
+                id: image.id,
+                url: image.url,
+                posterName: image.posterName,
+                description: image.description,
+                userPosted: image.userPosted,
+                binned: binStatus,
             },
         });
     }

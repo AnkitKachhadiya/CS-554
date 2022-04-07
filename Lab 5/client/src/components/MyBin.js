@@ -8,6 +8,7 @@ function MyBin() {
     const [myBinnedImages, setMyBinnedImages] = useState([]);
     const { data, loading, refetch } = useQuery(GET_BINNED_IMAGES, {
         onCompleted: (data) => {
+            console.log(data);
             data.binnedImages
                 ? setMyBinnedImages(data.binnedImages)
                 : setMyBinnedImages([]);
@@ -37,14 +38,12 @@ function MyBin() {
 
         updateImage({
             variables: {
-                input: {
-                    id: image.id,
-                    url: image.url,
-                    posterName: image.posterName,
-                    description: image.description,
-                    userPosted: image.userPosted,
-                    binned: binStatus,
-                },
+                id: image.id,
+                url: image.url,
+                posterName: image.posterName,
+                description: image.description,
+                userPosted: image.userPosted,
+                binned: binStatus,
             },
         });
     }
