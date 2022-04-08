@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Nav, StyledHeader, StyledLink } from "./styles/Header.styled";
 import Images from "./Images";
 import MyBin from "./MyBin";
+import MyPosts from "./MyPosts";
+import NewPost from "./NewPost";
 
 function NavBar() {
     return (
@@ -16,8 +18,8 @@ function NavBar() {
             <Routes>
                 <Route exact path="/" element={<Images />} />
                 <Route exact path="/my-bin" element={<MyBin />} />
-                <Route exact path="/my-posts" element={<Images />} />
-                <Route exact path="/new-post" element={<Images />} />
+                <Route exact path="/my-posts" element={<MyPosts />} />
+                <Route exact path="/new-post" element={<NewPost />} />
             </Routes>
         </BrowserRouter>
     );

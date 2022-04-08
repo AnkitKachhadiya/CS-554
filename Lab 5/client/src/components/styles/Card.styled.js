@@ -1,4 +1,5 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Card = styled.div`
     background: white;
@@ -65,7 +66,7 @@ export const CardContainer = styled.div`
     margin: 0 auto;
 `;
 
-export const StyledButton = styled.button`
+const buttonStyles = () => css`
     background-color: ${({ bg }) => bg || "#e60023"};
     box-sizing: border-box;
     position: relative;
@@ -94,7 +95,52 @@ export const StyledButton = styled.button`
     box-shadow: 0 3px 1px -2px #0003, 0 2px 2px #00000024, 0 1px 5px #0000001f;
 `;
 
+export const StyledButton = styled.button(buttonStyles);
+export const StyledLink = styled(Link)(buttonStyles);
+
 export const LoadMoreContainer = styled.div`
     text-align: center;
     margin: 25px 0;
+`;
+
+export const InputContainer = styled.div`
+    text-align: center;
+    padding: 2.5rem;
+`;
+
+export const StyledInput = styled.input`
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    &[type="text"]:focus {
+        outline: none;
+    }
+`;
+
+export const FormControl = styled.div`
+    text-align: initial;
+    margin-bottom: 1rem;
+`;
+
+export const FormTitle = styled.p`
+    text-align: center;
+    padding-top: 2rem;
+`;
+
+export const Error = styled.p`
+    color: #d32f2f;
+    margin: 0;
 `;

@@ -26,6 +26,19 @@ export const GET_BINNED_IMAGES = gql`
     }
 `;
 
+export const GET_MY_POSTS = gql`
+    query UserPostedImages {
+        userPostedImages {
+            id
+            url
+            posterName
+            description
+            userPosted
+            binned
+        }
+    }
+`;
+
 export const UPDATE_IMAGE = gql`
     mutation UpdateImage(
         $id: ID!

@@ -1,16 +1,19 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_BINNED_IMAGES, UPDATE_IMAGE } from "../queries";
+import { GET_MY_POSTS, UPDATE_IMAGE } from "../queries";
 import { Loader } from "./styles/Loader.styled";
 import Cards from "./Cards";
+import { useTheme } from "styled-components";
+import { StyledLink, LoadMoreContainer } from "./styles/Card.styled";
 import { useState } from "react";
 
-function MyBin() {
-    const [myBinnedImages, setMyBinnedImages] = useState([]);
-    const { data, loading, refetch } = useQuery(GET_BINNED_IMAGES, {
+function MyPosts() {
+    const theme = useTheme();
+    const [myPostedImages, setMyPostedImages] = useState([]);
+    const { data, loading, refetch } = useQuery(GET_MY_POSTS, {
         onCompleted: (data) => {
-            data.binnedImages
-                ? setMyBinnedImages(data.binnedImages)
-                : setMyBinnedImages([]);
+            data.userPostedImages
+                ? setMyPostedImages(data.userPostedImages)
+                : setMyPostedImages([]);
         },
         fetchPolicy: "network-only",
         notifyOnNetworkStatusChange: true,
@@ -31,7 +34,7 @@ function MyBin() {
     }
 
     function updateBinnedStatus(id, binStatus) {
-        const image = myBinnedImages.find((currentImage) => {
+        const image = myPostedImages.find((currentImage) => {
             return currentImage.id === id;
         });
 
@@ -50,9 +53,14 @@ function MyBin() {
     if (data) {
         return (
             <>
-                {myBinnedImages && myBinnedImages.length > 0 && (
+                <LoadMoreContainer>
+                    <StyledLink bg={theme.colors.primary} to="/new-post">
+                        Upload a Post
+                    </StyledLink>
+                </LoadMoreContainer>
+                {myPostedImages && myPostedImages.length > 0 && (
                     <Cards
-                        data={myBinnedImages}
+                        data={myPostedImages}
                         handleAddToBin={handleAddToBin}
                         handleRemoveFromBin={handleRemoveFromBin}
                     />
@@ -62,4 +70,4 @@ function MyBin() {
     }
 }
 
-export default MyBin;
+export default MyPosts;
