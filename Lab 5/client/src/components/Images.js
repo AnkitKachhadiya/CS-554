@@ -16,7 +16,7 @@ function Images() {
             data.unsplashImages &&
                 setMyImages(myImages.concat(data.unsplashImages));
         },
-        fetchPolicy: "network-only",
+        fetchPolicy: "no-cache",
         notifyOnNetworkStatusChange: true,
     });
     const [updateImage] = useMutation(UPDATE_IMAGE);

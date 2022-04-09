@@ -79,7 +79,7 @@ const buttonStyles = () => css`
     text-decoration: none;
     vertical-align: baseline;
     text-align: center;
-    margin: 0;
+    margin: 0 10px;
     min-width: 64px;
     line-height: 36px;
     padding: 0 16px;

@@ -12,7 +12,7 @@ function MyBin() {
                 ? setMyBinnedImages(data.binnedImages)
                 : setMyBinnedImages([]);
         },
-        fetchPolicy: "network-only",
+        fetchPolicy: "no-cache",
         notifyOnNetworkStatusChange: true,
     });
 

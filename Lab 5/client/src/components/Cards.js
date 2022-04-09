@@ -9,7 +9,13 @@ import {
     StyledButton,
 } from "./styles/Card.styled";
 
-function Cards({ data, handleAddToBin, handleRemoveFromBin }) {
+function Cards({
+    data,
+    handleAddToBin,
+    handleRemoveFromBin,
+    handleDeletePost,
+    showDelete = false,
+}) {
     return (
         <CardContainer>
             {data.map((image) => (
@@ -40,6 +46,14 @@ function Cards({ data, handleAddToBin, handleRemoveFromBin }) {
                                     onClick={() => handleAddToBin(image.id)}
                                 >
                                     Add to bin
+                                </StyledButton>
+                            )}
+                            {showDelete && image.userPosted && (
+                                <StyledButton
+                                    bg="#795548"
+                                    onClick={() => handleDeletePost(image.id)}
+                                >
+                                    Delete Post
                                 </StyledButton>
                             )}
                         </CardButton>

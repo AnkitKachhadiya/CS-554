@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_MY_POSTS, UPDATE_IMAGE } from "../queries";
+import { GET_MY_POSTS, UPDATE_IMAGE, DELETE_IMAGE } from "../queries";
 import { Loader } from "./styles/Loader.styled";
 import Cards from "./Cards";
 import { useTheme } from "styled-components";
@@ -15,11 +15,12 @@ function MyPosts() {
                 ? setMyPostedImages(data.userPostedImages)
                 : setMyPostedImages([]);
         },
-        fetchPolicy: "network-only",
+        fetchPolicy: "no-cache",
         notifyOnNetworkStatusChange: true,
     });
 
     const [updateImage] = useMutation(UPDATE_IMAGE, { onCompleted: refetch });
+    const [deleteImage] = useMutation(DELETE_IMAGE, { onCompleted: refetch });
 
     if (loading) {
         return <Loader />;
@@ -50,6 +51,14 @@ function MyPosts() {
         });
     }
 
+    function handleDeletePost(id) {
+        deleteImage({
+            variables: {
+                id: id,
+            },
+        });
+    }
+
     if (data) {
         return (
             <>
@@ -63,6 +72,8 @@ function MyPosts() {
                         data={myPostedImages}
                         handleAddToBin={handleAddToBin}
                         handleRemoveFromBin={handleRemoveFromBin}
+                        handleDeletePost={handleDeletePost}
+                        showDelete
                     />
                 )}
             </>
