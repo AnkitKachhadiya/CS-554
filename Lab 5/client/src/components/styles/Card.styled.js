@@ -63,7 +63,7 @@ export const CardButton = styled.div``;
 
 export const CardContainer = styled.div`
     width: 50%;
-    margin: 0 auto;
+    margin: 0 auto 1.5rem auto;
 `;
 
 const buttonStyles = () => css`

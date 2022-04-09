@@ -1,3 +1,5 @@
+import { useMutation } from "@apollo/client";
+import { UPLOAD_IMAGE } from "../queries";
 import { StyledInput, FormControl } from "./styles/Card.styled";
 import { useState } from "react";
 import {
@@ -8,18 +10,25 @@ import {
     FormTitle,
     Error,
 } from "./styles/Card.styled";
+import { useNavigate } from "react-router-dom";
 
 function NewPost() {
+    const navigate = useNavigate();
     const [description, setDescription] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [authorName, setAuthorName] = useState("");
     const [errors, setErrors] = useState("");
+    const [uploadImage] = useMutation(UPLOAD_IMAGE, {
+        onCompleted: () => {
+            navigate("/my-posts");
+        },
+        onError: (error) => {
+            setErrors(error);
+        },
+    });
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log(description);
-        console.log(imageUrl);
-        console.log(authorName);
 
         let errors = "";
 
@@ -36,6 +45,18 @@ function NewPost() {
         }
 
         setErrors(errors);
+
+        if (errors.trim().length > 0) {
+            return false;
+        }
+
+        uploadImage({
+            variables: {
+                url: imageUrl,
+                posterName: authorName,
+                description: description,
+            },
+        });
     }
 
     function isValidUrl(string) {

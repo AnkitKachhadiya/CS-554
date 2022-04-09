@@ -60,3 +60,19 @@ export const UPDATE_IMAGE = gql`
         }
     }
 `;
+
+export const UPLOAD_IMAGE = gql`
+    mutation UploadImage(
+        $url: String!
+        $description: String
+        $posterName: String
+    ) {
+        uploadImage(
+            url: $url
+            description: $description
+            posterName: $posterName
+        ) {
+            id
+        }
+    }
+`;
