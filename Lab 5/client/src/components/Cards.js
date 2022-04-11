@@ -14,14 +14,20 @@ function Cards({
     handleAddToBin,
     handleRemoveFromBin,
     handleDeletePost,
-    showDelete = false,
+    showDelete,
 }) {
     return (
         <CardContainer>
             {data.map((image) => (
                 <Card key={image.id}>
                     <ImageContainer>
-                        <Image src={image.url} alt={image.description} />
+                        <Image
+                            src={image.url}
+                            alt={image.description}
+                            onError={(event) =>
+                                (event.target.src = "./page-not-found.png")
+                            }
+                        />
                     </ImageContainer>
 
                     <CardBody>

@@ -16,6 +16,17 @@ const GlobalStyles = createGlobalStyle`
         font-size: 1.15em;
         margin: 0;
     }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .logo {
+        padding: 0;
+        margin: 0 0 10px 0;
+        text-align: center;
+        color: white;
+    }
 `;
 
 export default GlobalStyles;

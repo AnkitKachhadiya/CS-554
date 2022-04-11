@@ -50,12 +50,14 @@ function MyBin() {
     if (data) {
         return (
             <>
-                {myBinnedImages && myBinnedImages.length > 0 && (
+                {myBinnedImages && myBinnedImages.length > 0 ? (
                     <Cards
                         data={myBinnedImages}
                         handleAddToBin={handleAddToBin}
                         handleRemoveFromBin={handleRemoveFromBin}
                     />
+                ) : (
+                    <p className="text-center">No Binned Images Found.</p>
                 )}
             </>
         );

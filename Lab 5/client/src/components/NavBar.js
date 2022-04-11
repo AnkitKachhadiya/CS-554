@@ -9,6 +9,7 @@ function NavBar() {
     return (
         <BrowserRouter>
             <StyledHeader>
+                <h1 className="logo">Binterest</h1>
                 <Nav>
                     <StyledLink to="/">Images</StyledLink>
                     <StyledLink to="/my-bin">My Bin</StyledLink>

@@ -67,7 +67,7 @@ function MyPosts() {
                         Upload a Post
                     </StyledLink>
                 </LoadMoreContainer>
-                {myPostedImages && myPostedImages.length > 0 && (
+                {myPostedImages && myPostedImages.length > 0 ? (
                     <Cards
                         data={myPostedImages}
                         handleAddToBin={handleAddToBin}
@@ -75,6 +75,8 @@ function MyPosts() {
                         handleDeletePost={handleDeletePost}
                         showDelete
                     />
+                ) : (
+                    <p className="text-center">No Uploaded Images Found.</p>
                 )}
             </>
         );

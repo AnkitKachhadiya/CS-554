@@ -13,8 +13,9 @@ function Images() {
     const { loading } = useQuery(GET_UNSPLASH_IMAGES, {
         variables: { pageNum: currentPageNumber },
         onCompleted: (data) => {
-            data.unsplashImages &&
-                setMyImages(myImages.concat(data.unsplashImages));
+            data.unsplashImages
+                ? setMyImages(data.unsplashImages)
+                : setMyImages([]);
         },
         fetchPolicy: "no-cache",
         notifyOnNetworkStatusChange: true,
@@ -55,23 +56,39 @@ function Images() {
     if (myImages) {
         return (
             <>
-                {myImages && myImages.length > 0 && (
-                    <Cards
-                        data={myImages}
-                        handleAddToBin={handleAddToBin}
-                        handleRemoveFromBin={handleRemoveFromBin}
-                    />
+                {myImages && myImages.length > 0 ? (
+                    <>
+                        <Cards
+                            data={myImages}
+                            handleAddToBin={handleAddToBin}
+                            handleRemoveFromBin={handleRemoveFromBin}
+                        />
+                        <LoadMoreContainer>
+                            {currentPageNumber > 1 && (
+                                <StyledButton
+                                    bg={theme.colors.primary}
+                                    onClick={() =>
+                                        setCurrentPageNumber(
+                                            currentPageNumber - 1
+                                        )
+                                    }
+                                >
+                                    Previous Page
+                                </StyledButton>
+                            )}
+                            <StyledButton
+                                bg={theme.colors.primary}
+                                onClick={() =>
+                                    setCurrentPageNumber(currentPageNumber + 1)
+                                }
+                            >
+                                Next Page
+                            </StyledButton>
+                        </LoadMoreContainer>
+                    </>
+                ) : (
+                    <p className="text-center">Images Not Found.</p>
                 )}
-                <LoadMoreContainer>
-                    <StyledButton
-                        bg={theme.colors.primary}
-                        onClick={() =>
-                            setCurrentPageNumber(currentPageNumber + 1)
-                        }
-                    >
-                        Load More
-                    </StyledButton>
-                </LoadMoreContainer>
             </>
         );
     }
