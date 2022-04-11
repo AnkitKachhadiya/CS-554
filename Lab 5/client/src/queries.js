@@ -9,6 +9,7 @@ export const GET_UNSPLASH_IMAGES = gql`
             description
             userPosted
             binned
+            numBinned
         }
     }
 `;
@@ -22,6 +23,7 @@ export const GET_BINNED_IMAGES = gql`
             description
             userPosted
             binned
+            numBinned
         }
     }
 `;
@@ -35,6 +37,7 @@ export const GET_MY_POSTS = gql`
             description
             userPosted
             binned
+            numBinned
         }
     }
 `;
@@ -47,6 +50,7 @@ export const UPDATE_IMAGE = gql`
         $description: String
         $userPosted: Boolean
         $binned: Boolean
+        $numBinned: Int
     ) {
         updateImage(
             id: $id
@@ -55,6 +59,7 @@ export const UPDATE_IMAGE = gql`
             description: $description
             userPosted: $userPosted
             binned: $binned
+            numBinned: $numBinned
         ) {
             id
         }
@@ -81,6 +86,20 @@ export const DELETE_IMAGE = gql`
     mutation DeleteImage($id: ID!) {
         deleteImage(id: $id) {
             id
+        }
+    }
+`;
+
+export const GET_POPULAR_IMAGES = gql`
+    query GetTopTenBinnedPosts {
+        getTopTenBinnedPosts {
+            id
+            url
+            posterName
+            description
+            userPosted
+            binned
+            numBinned
         }
     }
 `;

@@ -47,6 +47,7 @@ function MyPosts() {
                 description: image.description,
                 userPosted: image.userPosted,
                 binned: binStatus,
+                numBinned: image.numBinned,
             },
         });
     }

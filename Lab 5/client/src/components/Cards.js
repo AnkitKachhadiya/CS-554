@@ -15,6 +15,7 @@ function Cards({
     handleRemoveFromBin,
     handleDeletePost,
     showDelete,
+    mostPopular,
 }) {
     return (
         <CardContainer>
@@ -42,32 +43,36 @@ function Cards({
                                 An image by:<strong> {image.posterName}</strong>
                             </p>
                         </CardText>
-                        <CardButton>
-                            {image.binned ? (
-                                <StyledButton
-                                    bg="#424242"
-                                    onClick={() =>
-                                        handleRemoveFromBin(image.id)
-                                    }
-                                >
-                                    Remove from bin
-                                </StyledButton>
-                            ) : (
-                                <StyledButton
-                                    onClick={() => handleAddToBin(image.id)}
-                                >
-                                    Add to bin
-                                </StyledButton>
-                            )}
-                            {showDelete && image.userPosted && (
-                                <StyledButton
-                                    bg="#795548"
-                                    onClick={() => handleDeletePost(image.id)}
-                                >
-                                    Delete Post
-                                </StyledButton>
-                            )}
-                        </CardButton>
+                        {!mostPopular && (
+                            <CardButton>
+                                {image.binned ? (
+                                    <StyledButton
+                                        bg="#424242"
+                                        onClick={() =>
+                                            handleRemoveFromBin(image.id)
+                                        }
+                                    >
+                                        Remove from bin
+                                    </StyledButton>
+                                ) : (
+                                    <StyledButton
+                                        onClick={() => handleAddToBin(image.id)}
+                                    >
+                                        Add to bin
+                                    </StyledButton>
+                                )}
+                                {showDelete && image.userPosted && (
+                                    <StyledButton
+                                        bg="#795548"
+                                        onClick={() =>
+                                            handleDeletePost(image.id)
+                                        }
+                                    >
+                                        Delete Post
+                                    </StyledButton>
+                                )}
+                            </CardButton>
+                        )}
                     </CardBody>
                 </Card>
             ))}

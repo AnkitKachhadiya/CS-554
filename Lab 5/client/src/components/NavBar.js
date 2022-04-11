@@ -4,6 +4,7 @@ import Images from "./Images";
 import MyBin from "./MyBin";
 import MyPosts from "./MyPosts";
 import NewPost from "./NewPost";
+import MostPopular from "./MostPopular";
 
 function NavBar() {
     return (
@@ -14,6 +15,7 @@ function NavBar() {
                     <StyledLink to="/">Images</StyledLink>
                     <StyledLink to="/my-bin">My Bin</StyledLink>
                     <StyledLink to="/my-posts">My Posts</StyledLink>
+                    <StyledLink to="/popularity">Most Popular</StyledLink>
                 </Nav>
             </StyledHeader>
             <Routes>
@@ -21,6 +23,7 @@ function NavBar() {
                 <Route exact path="/my-bin" element={<MyBin />} />
                 <Route exact path="/my-posts" element={<MyPosts />} />
                 <Route exact path="/new-post" element={<NewPost />} />
+                <Route exact path="/popularity" element={<MostPopular />} />
             </Routes>
         </BrowserRouter>
     );

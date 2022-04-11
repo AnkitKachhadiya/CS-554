@@ -49,6 +49,7 @@ function Images() {
                 description: image.description,
                 userPosted: image.userPosted,
                 binned: binStatus,
+                numBinned: image.numBinned,
             },
         });
     }
