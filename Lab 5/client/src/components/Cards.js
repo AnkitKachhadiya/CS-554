@@ -23,7 +23,12 @@ function Cards({
                     <ImageContainer>
                         <Image
                             src={image.url}
-                            alt={image.description}
+                            alt={
+                                !image.description ||
+                                image.description.length < 1
+                                    ? "Binterest Image"
+                                    : image.description
+                            }
                             onError={(event) =>
                                 (event.target.src = "./page-not-found.png")
                             }
