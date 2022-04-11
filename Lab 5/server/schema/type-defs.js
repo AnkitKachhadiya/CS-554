@@ -19,6 +19,9 @@ const typeDefs = gql`
 
         "Has the user binned this image post"
         binned: Boolean!
+
+        "Number of likes"
+        numBinned: Int!
     }
 
     type Query {
@@ -30,6 +33,9 @@ const typeDefs = gql`
 
         "Get posted images"
         userPostedImages: [ImagePost]
+
+        "Get popular images"
+        getTopTenBinnedPosts: [ImagePost]
     }
 
     type Mutation {
@@ -45,6 +51,7 @@ const typeDefs = gql`
             description: String
             userPosted: Boolean
             binned: Boolean
+            numBinned: Int
         ): ImagePost
         deleteImage(id: ID!): ImagePost
     }

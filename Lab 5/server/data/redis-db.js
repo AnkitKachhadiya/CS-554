@@ -38,7 +38,12 @@ async function isImagePostBinned(id) {
 }
 
 async function updateImage(image) {
-    image.binned ? addImageToBin(image) : removeImageFromBin(image.id);
+    image.binned
+        ? await addImageToBin(image)
+        : await removeImageFromBin(image.id);
+    image.binned
+        ? await addToPopularity(image)
+        : await removeFromPopularity(image);
 }
 
 async function addImageToBin(image) {
@@ -107,6 +112,7 @@ async function uploadImagePost(image) {
     image["id"] = uuidv4();
     image["userPosted"] = true;
     image["binned"] = false;
+    image["numBinned"] = 0;
 
     if (postedImages === null) {
         await redisClient.set(POSTED_IMAGES, JSON.stringify([image]));
@@ -119,6 +125,35 @@ async function uploadImagePost(image) {
     return image;
 }
 
+async function getMostPopularImages() {
+    const images = await redisClient.zRange("mostPopular", 0, -1, {
+        REV: true,
+    });
+
+    if (images.length < 1) {
+        return [];
+    }
+
+    const result = [];
+
+    images.map((currentImage) => result.push(JSON.parse(currentImage)));
+
+    return result;
+}
+
+async function removeFromPopularity(image) {
+    image.binned = !image.binned;
+
+    await redisClient.zRem("mostPopular", JSON.stringify(image));
+}
+
+async function addToPopularity(image) {
+    await redisClient.zAdd("mostPopular", {
+        score: image.numBinned,
+        value: JSON.stringify(image),
+    });
+}
+
 module.exports = {
     getBinnedImages,
     getUserPostedImages,
@@ -126,4 +161,5 @@ module.exports = {
     isImagePostBinned,
     deletePostedImage,
     uploadImagePost,
+    getMostPopularImages,
 };

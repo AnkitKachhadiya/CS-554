@@ -25,6 +25,7 @@ function getImage(image) {
         description: image.description || image.alt_description,
         userPosted: false,
         binned: false,
+        numBinned: image.likes || 0,
     };
 }
 
