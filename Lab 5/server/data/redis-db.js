@@ -155,7 +155,9 @@ async function getMostPopularImages() {
 
     images.map((currentImage) => result.push(JSON.parse(currentImage)));
 
-    return result;
+    const top10 = result.slice(0, 10);
+
+    return top10;
 }
 
 async function removeFromPopularity(image) {
