@@ -92,6 +92,23 @@ async function deletePostedImage(id) {
         (currentImage) => currentImage.id !== id
     );
 
+    const removingImage = postedImages.find(
+        (currentImage) => currentImage.id === id
+    );
+
+    if (removingImage) {
+        const remove = new Map();
+        remove.set("id", removingImage.id);
+        remove.set("url", removingImage.url);
+        remove.set("posterName", removingImage.posterName);
+        remove.set("description", removingImage.description);
+        remove.set("userPosted", removingImage.userPosted);
+        remove.set("binned", removingImage.binned);
+        remove.set("numBinned", removingImage.numBinned);
+        const removeObj = Object.fromEntries(remove);
+        await removeFromPopularity(removeObj);
+    }
+
     if (filteredPostedImages.length > 0) {
         await redisClient.set(
             POSTED_IMAGES,

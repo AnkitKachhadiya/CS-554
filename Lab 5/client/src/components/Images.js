@@ -83,7 +83,7 @@ function Images() {
                                     setCurrentPageNumber(currentPageNumber + 1)
                                 }
                             >
-                                Next Page
+                                Get More Images
                             </StyledButton>
                         </LoadMoreContainer>
                     </>

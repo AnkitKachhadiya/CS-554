@@ -22,10 +22,6 @@ function MyBin() {
         return <Loader />;
     }
 
-    function handleAddToBin(id) {
-        updateBinnedStatus(id, true);
-    }
-
     function handleRemoveFromBin(id) {
         updateBinnedStatus(id, false);
     }
@@ -54,7 +50,6 @@ function MyBin() {
                 {myBinnedImages && myBinnedImages.length > 0 ? (
                     <Cards
                         data={myBinnedImages}
-                        handleAddToBin={handleAddToBin}
                         handleRemoveFromBin={handleRemoveFromBin}
                     />
                 ) : (
