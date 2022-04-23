@@ -37,7 +37,7 @@ const typeDefs = gql`
     }
 
     type Query {
-        pokemons(pageNum: Int): Pokemons
+        pokemons(offset: Int): Pokemons
         pokemon(id: Int!): Pokemon
     }
 `;

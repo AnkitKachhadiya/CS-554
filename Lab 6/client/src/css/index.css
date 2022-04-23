@@ -1,0 +1,15 @@
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.card {
+    box-shadow: 0 7px 17px -8px rgb(0 0 0 / 80%);
+    transition: all 0.17s ease-in-out;
+    color: #151515;
+    font-size: 16px;
+}
+
+.card:hover {
+    transform: translate3d(0, -2%, 0);
+    color: #feca1b !important;
+}
