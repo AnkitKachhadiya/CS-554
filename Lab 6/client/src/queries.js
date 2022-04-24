@@ -18,3 +18,19 @@ export const GET_POKEMON_LIST = gql`
         }
     }
 `;
+
+export const GET_POKEMON = gql`
+    query Pokemon($pokemonId: Int!) {
+        pokemon(id: $pokemonId) {
+            id
+            imageUrl
+            name
+            types {
+                name
+            }
+            abilities {
+                name
+            }
+        }
+    }
+`;

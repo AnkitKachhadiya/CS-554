@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 import Home from "./Home";
 import Pokemon from "./Pokemon";
+import SinglePokemon from "./SinglePokemon";
+import Trainers from "./Trainers";
 
 function NavigationBar() {
     return (
@@ -40,12 +42,12 @@ function NavigationBar() {
                 </Navbar>
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/trainers" element={<Home />} />
+                    <Route path="/trainers" element={<Trainers />} />
                     <Route
                         path="/pokemon/page/:pageNum"
                         element={<Pokemon />}
                     />
-                    <Route path="/pokemon/:id" element={<Home />} />
+                    <Route path="/pokemon/:id" element={<SinglePokemon />} />
                 </Routes>
             </BrowserRouter>
         </>

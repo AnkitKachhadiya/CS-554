@@ -37,7 +37,10 @@ const typeDefs = gql`
     }
 
     type Query {
+        "Get all pokemons"
         pokemons(offset: Int): Pokemons
+
+        "Get pokemon by id"
         pokemon(id: Int!): Pokemon
     }
 `;
