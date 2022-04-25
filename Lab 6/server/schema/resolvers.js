@@ -3,8 +3,8 @@ const { getPokemons, getPokemonById } = require("../data/api");
 
 const resolvers = {
     Query: {
-        pokemons: async (_, { offset = 0 }) => {
-            const pokemons = await getPokemons(offset);
+        pokemons: async (_, { offset = 0, query = "" }) => {
+            const pokemons = await getPokemons(offset, query);
             return pokemons;
         },
 

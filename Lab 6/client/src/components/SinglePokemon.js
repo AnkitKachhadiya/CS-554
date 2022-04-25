@@ -25,7 +25,18 @@ function SinglePokemon() {
     }
 
     if (error) {
-        return <p className="text-center mt-5">{error}</p>;
+        return <p className="text-center mt-5">{error.message}</p>;
+    }
+
+    if (!data || !data.pokemon) {
+        return (
+            <div className="text-center mt-5">
+                <h2>
+                    Status Code: 404 <br />
+                    Error Message: Data not found
+                </h2>
+            </div>
+        );
     }
 
     const [selectedTrainer] =

@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { GET_POKEMON_LIST } from "../queries";
 import { useState } from "react";
 import Loader from "./Loader";
-import { Container } from "react-bootstrap";
+import { Container, InputGroup, FormControl, Button } from "react-bootstrap";
 import AllCards from "./AllCards";
 import { useParams, useNavigate } from "react-router-dom";
 import Pagination from "./PaginationComponent";
@@ -14,10 +14,11 @@ function Pokemon() {
     const { pageNum } = useParams();
 
     const [currentPage, setCurrentPage] = useState(parseInt(pageNum));
+    const [searchInput, setSearchInput] = useState("");
+    const [isSearchOn, setIsSearchOn] = useState(false);
 
     const offset = pageNum * TOTAL_ITEMS_PER_PAGE;
-
-    const { data, error, loading } = useQuery(GET_POKEMON_LIST, {
+    const { data, error, loading, refetch } = useQuery(GET_POKEMON_LIST, {
         variables: { offset: offset },
         onCompleted: () => {
             setCurrentPage(parseInt(pageNum));
@@ -41,7 +42,7 @@ function Pokemon() {
     }
 
     if (error) {
-        return <p className="text-center mt-5">{error}</p>;
+        return <p className="text-center mt-5">{error.message}</p>;
     }
 
     const isResponseAvailable =
@@ -61,19 +62,50 @@ function Pokemon() {
             <h1 className="text-center mt-5 mb-5">Pokédex</h1>
 
             <Container fluid className="px-5">
+                <InputGroup className="mb-3 mt-3 pokemon-input-group">
+                    <FormControl
+                        placeholder="Search pokémon"
+                        aria-label="Search"
+                        aria-describedby="search-button"
+                        className="pokemon-form-control"
+                        onChange={(event) =>
+                            setSearchInput(event.target.value.trim())
+                        }
+                        value={searchInput}
+                    />
+                    <Button
+                        id="submit-button"
+                        type="button"
+                        onClick={() => {
+                            setIsSearchOn(searchInput.length > 0);
+                            refetch({
+                                offset: offset,
+                                query: searchInput,
+                            });
+                        }}
+                    >
+                        Search
+                    </Button>
+                </InputGroup>
+
                 {isResponseAvailable && (
                     <>
-                        <Pagination
-                            totalPages={totalPages}
-                            currentPage={currentPage + 1}
-                            changeHandler={changeHandler}
-                        />
+                        {!isSearchOn && (
+                            <Pagination
+                                totalPages={totalPages}
+                                currentPage={currentPage + 1}
+                                changeHandler={changeHandler}
+                            />
+                        )}
                         <AllCards data={data.pokemons.result} />
-                        <Pagination
-                            totalPages={totalPages}
-                            currentPage={currentPage + 1}
-                            changeHandler={changeHandler}
-                        />
+
+                        {!isSearchOn && (
+                            <Pagination
+                                totalPages={totalPages}
+                                currentPage={currentPage + 1}
+                                changeHandler={changeHandler}
+                            />
+                        )}
                     </>
                 )}
 

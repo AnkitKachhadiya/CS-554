@@ -49,7 +49,7 @@ const typeDefs = gql`
 
     type Query {
         "Get all pokemons"
-        pokemons(offset: Int): Pokemons
+        pokemons(offset: Int, query: String): Pokemons
 
         "Get pokemon by id"
         pokemon(id: Int!): SinglePokemon

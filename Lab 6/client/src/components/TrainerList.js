@@ -31,7 +31,7 @@ function TrainerList({ handleSelectTrainer, handleDeleteTrainer }) {
                                             Delete Trainer
                                         </button>
                                         <button
-                                            className="badge bg-info border-0 mx-1"
+                                            className="badge bg-info border-0 mx-1 text-black"
                                             onClick={() =>
                                                 handleSelectTrainer(
                                                     currentTrainer.id

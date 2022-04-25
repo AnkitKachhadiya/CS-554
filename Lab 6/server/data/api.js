@@ -6,8 +6,15 @@ const BASE_URL = "https://pokeapi.co/api/v2/pokemon";
 const BASE_OFFICIAL_ARTWORK_URL =
     "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 
-async function getPokemons(offset = 0) {
+async function getPokemons(offset = 0, query = "") {
     try {
+        //for search
+        if (query !== null && query.trim().length > 0) {
+            const searchData = await searchPokemon(query);
+
+            return searchData;
+        }
+
         if (offset === null) {
             return null;
         }
@@ -49,7 +56,6 @@ async function getPokemons(offset = 0) {
 
         return result;
     } catch (error) {
-        console.log(error);
         return {
             count: 0,
             result: [],
@@ -82,7 +88,33 @@ async function getPokemonById(id) {
 
         return pokemonData;
     } catch (error) {
-        console.log(error);
+        return null;
+    }
+}
+
+async function searchPokemon(searchQuery) {
+    try {
+        const API_URL = `${BASE_URL}/${searchQuery.toLowerCase()}/`;
+
+        const { data } = await axios.get(API_URL);
+
+        return data
+            ? {
+                  count: 1,
+                  result: [
+                      {
+                          id: (data && data.id) || "N/A",
+                          imageUrl:
+                              (data &&
+                                  data.id &&
+                                  `${BASE_OFFICIAL_ARTWORK_URL}${data.id}.png`) ||
+                              "N/A",
+                          name: (data && data.name) || "N/A",
+                      },
+                  ],
+              }
+            : null;
+    } catch (error) {
         return null;
     }
 }
