@@ -2,6 +2,9 @@ const axios = require("axios");
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon";
 
+const BASE_OFFICIAL_ARTWORK_URL =
+    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
+
 async function getPokemons(offset = 0) {
     try {
         const PER_PAGE = 36;
@@ -37,19 +40,18 @@ async function getPokemons(offset = 0) {
 }
 
 async function _getPokemon(pokemon) {
-    const POKEMON_API_URL = pokemon.url;
+    const splitUrl = pokemon.url.split("/");
+    splitUrl.pop();
 
-    const pokemonDetails = await getPokemonDetails(POKEMON_API_URL);
+    const pokemonId = splitUrl.pop();
 
-    const pokemonData = _getPokemonData(pokemonDetails);
+    const newPokemon = {
+        id: pokemonId,
+        imageUrl: `${BASE_OFFICIAL_ARTWORK_URL}${pokemonId}.png`,
+        name: pokemon.name,
+    };
 
-    return pokemonData;
-}
-
-async function getPokemonDetails(Url) {
-    const { data } = await axios.get(Url);
-
-    return data && isObject(data) ? data : {};
+    return newPokemon;
 }
 
 async function getPokemonById(id) {

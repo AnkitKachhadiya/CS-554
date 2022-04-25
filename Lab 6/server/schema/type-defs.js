@@ -10,6 +10,17 @@ const typeDefs = gql`
 
         "Name of the pokemon"
         name: String!
+    }
+
+    type SinglePokemon {
+        "Unique identifier for pokemon"
+        id: ID!
+
+        "Image URL"
+        imageUrl: String!
+
+        "Name of the pokemon"
+        name: String!
 
         "Pokemon types"
         types: [Type!]
@@ -41,7 +52,7 @@ const typeDefs = gql`
         pokemons(offset: Int): Pokemons
 
         "Get pokemon by id"
-        pokemon(id: Int!): Pokemon
+        pokemon(id: Int!): SinglePokemon
     }
 `;
 

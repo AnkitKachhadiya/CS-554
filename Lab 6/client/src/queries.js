@@ -8,19 +8,13 @@ export const GET_POKEMON_LIST = gql`
                 id
                 imageUrl
                 name
-                types {
-                    name
-                }
-                abilities {
-                    name
-                }
             }
         }
     }
 `;
 
 export const GET_POKEMON = gql`
-    query Pokemon($pokemonId: Int!) {
+    query SinglePokemon($pokemonId: Int!) {
         pokemon(id: $pokemonId) {
             id
             imageUrl
