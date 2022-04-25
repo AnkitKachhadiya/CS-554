@@ -3,9 +3,16 @@ import { GET_POKEMON } from "../queries";
 import Loader from "./Loader";
 import { Container, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { catchPokemon, releasePokemon } from "../redux/actions/trainerActions";
 
 function SinglePokemon() {
+    const dispatch = useDispatch();
+
     const { id } = useParams();
+
+    const trainers = useSelector((state) => state.allTrainers);
 
     const { data, error, loading } = useQuery(GET_POKEMON, {
         variables: { pokemonId: parseInt(id) },
@@ -21,11 +28,126 @@ function SinglePokemon() {
         return <p className="text-center mt-5">{error}</p>;
     }
 
+    const [selectedTrainer] =
+        trainers && trainers.length > 0
+            ? trainers.filter((currentTrainer) => currentTrainer.isSelected)
+            : [];
+
+    const isTrainerSelected = selectedTrainer ? true : false;
+
+    function isPokemonCaught(pokemonId) {
+        if (!selectedTrainer) {
+            return false;
+        }
+
+        if (selectedTrainer.pokemonCount < 1) {
+            return false;
+        }
+
+        for (const currentPokemon of selectedTrainer.pokemon) {
+            if (currentPokemon.id === pokemonId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function isPokemonPartyFull() {
+        if (!selectedTrainer) {
+            return false;
+        }
+
+        if (selectedTrainer.pokemonCount < 1) {
+            return false;
+        }
+
+        if (
+            selectedTrainer.pokemonCount > 5 ||
+            selectedTrainer.pokemon.length > 5
+        ) {
+            return true;
+        }
+    }
+
+    function handleCatchPokemon(id, title, url) {
+        const newPokemon = {
+            id,
+            title,
+            url,
+        };
+
+        dispatch(catchPokemon(newPokemon));
+    }
+
+    function handleReleasePokemon(pokemonId) {
+        dispatch(releasePokemon(pokemonId));
+    }
+
     return (
         <>
             <h1 className="text-uppercase text-center mt-5">
                 {(data && data.pokemon && data.pokemon.name) || "N/A"}
             </h1>
+            {isTrainerSelected && (
+                <div className="mt-3 text-center mb-3">
+                    {console.log(selectedTrainer, data)}
+                    <>
+                        {!isPokemonCaught(data.pokemon.id) &&
+                            !isPokemonPartyFull() && (
+                                <button
+                                    className="badge bg-primary border-0"
+                                    type="button"
+                                    onClick={() =>
+                                        handleCatchPokemon(
+                                            data.pokemon.id,
+                                            data.pokemon.name,
+                                            data.pokemon.imageUrl
+                                        )
+                                    }
+                                >
+                                    <img
+                                        src="/catch.png"
+                                        alt="catch pokemon"
+                                        height="20"
+                                    />{" "}
+                                    Catch
+                                </button>
+                            )}
+                        {isPokemonCaught(data.pokemon.id) && (
+                            <button
+                                className="badge bg-danger border-0"
+                                type="button"
+                                onClick={() =>
+                                    handleReleasePokemon(data.pokemon.id)
+                                }
+                            >
+                                <img
+                                    src="/release.png"
+                                    alt="release pokemon"
+                                    height="20"
+                                />{" "}
+                                Release
+                            </button>
+                        )}
+
+                        {isPokemonPartyFull() &&
+                            !isPokemonCaught(data.pokemon.id) && (
+                                <button
+                                    className="badge bg-secondary border-0 pe-none"
+                                    type="button"
+                                >
+                                    <img
+                                        src="/party-full.png"
+                                        alt="party full"
+                                        height="20"
+                                    />{" "}
+                                    Party Full
+                                </button>
+                            )}
+                    </>
+                </div>
+            )}
             <Container fluid className="px-5 text-center">
                 <img
                     src={
@@ -36,6 +158,7 @@ function SinglePokemon() {
                         (event.target.src = "/pokemon-not-found.png")
                     }
                 />
+
                 <div className="mt-4">
                     {data.pokemon.types.map((currentType) => (
                         <span

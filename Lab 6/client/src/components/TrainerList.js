@@ -1,4 +1,3 @@
-import { Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import TrainerPokemonList from "./TrainerPokemonList";
 
@@ -6,19 +5,19 @@ function TrainerList({ handleSelectTrainer, handleDeleteTrainer }) {
     const trainers = useSelector((state) => state.allTrainers);
 
     return (
-        <Container className="mt-5">
+        <div className="mt-5">
             {trainers &&
                 trainers.length > 0 &&
                 trainers.map((currentTrainer) => (
-                    <div key={currentTrainer.id}>
+                    <div key={currentTrainer.id} className="mt-4">
                         <div>
-                            <p className="m-0">
+                            <p className="m-0 d-inline-block">
                                 <span className="fs-5 fw-bold mx-1">
                                     Trainer: {currentTrainer.name}
                                 </span>
                             </p>
 
-                            <div className="float-end">
+                            <div className="float-end d-inline-block">
                                 {!currentTrainer.isSelected && (
                                     <>
                                         <button
@@ -44,7 +43,7 @@ function TrainerList({ handleSelectTrainer, handleDeleteTrainer }) {
                                     </>
                                 )}
                                 {currentTrainer.isSelected && (
-                                    <button className="badge bg-success border-0 mx-1">
+                                    <button className="badge bg-success border-0 mx-1 pe-none">
                                         Selected
                                     </button>
                                 )}
@@ -53,7 +52,7 @@ function TrainerList({ handleSelectTrainer, handleDeleteTrainer }) {
                         <TrainerPokemonList pokemon={currentTrainer.pokemon} />
                     </div>
                 ))}
-        </Container>
+        </div>
     );
 }
 

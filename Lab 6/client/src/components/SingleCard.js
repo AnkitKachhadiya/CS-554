@@ -48,8 +48,8 @@ function SingleCard({
                     >
                         {title}
                     </Link>
-                    <div className="mt-3">
-                        {isTrainerSelected && (
+                    {isTrainerSelected && (
+                        <div className="mt-3">
                             <>
                                 {!isCaught && !isPartyFull && (
                                     <button
@@ -96,8 +96,8 @@ function SingleCard({
                                     </button>
                                 )}
                             </>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </Card.Title>
             </Card.Body>
         </Card>

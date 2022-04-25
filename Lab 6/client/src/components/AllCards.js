@@ -11,8 +11,6 @@ function AllCards({ data }) {
             ? trainers.filter((currentTrainer) => currentTrainer.isSelected)
             : [];
 
-    console.log(selectedTrainer);
-
     const isTrainerSelected = selectedTrainer ? true : false;
 
     function isPokemonCaught(pokemonId) {
