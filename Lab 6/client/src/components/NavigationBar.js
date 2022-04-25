@@ -5,6 +5,7 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 import Home from "./Home";
+import NotFound from "./NotFound";
 import Pokemon from "./Pokemon";
 import SinglePokemon from "./SinglePokemon";
 import Trainers from "./Trainers";
@@ -48,6 +49,7 @@ function NavigationBar() {
                         element={<Pokemon />}
                     />
                     <Route path="/pokemon/:id" element={<SinglePokemon />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>
         </>
