@@ -91,7 +91,6 @@ function SinglePokemon() {
             </h1>
             {isTrainerSelected && (
                 <div className="mt-3 text-center mb-3">
-                    {console.log(selectedTrainer, data)}
                     <>
                         {!isPokemonCaught(data.pokemon.id) &&
                             !isPokemonPartyFull() && (

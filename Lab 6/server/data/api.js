@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { setPokemonPage, getPokemonPage } = require("./redis-db");
 
 const BASE_URL = "https://pokeapi.co/api/v2/pokemon";
 
@@ -7,6 +8,17 @@ const BASE_OFFICIAL_ARTWORK_URL =
 
 async function getPokemons(offset = 0) {
     try {
+        if (offset === null) {
+            return null;
+        }
+
+        //check cache data available or not
+        const cacheData = await getPokemonPage(offset);
+
+        if (cacheData !== null) {
+            return cacheData;
+        }
+
         const PER_PAGE = 36;
 
         const API_URL = `${BASE_URL}?limit=${PER_PAGE}&offset=${offset}`;
@@ -19,17 +31,23 @@ async function getPokemons(offset = 0) {
             data.results &&
             Array.isArray(data.results) &&
             data.results.length > 0
-                ? data.results.map(
-                      async (currentPokemon) =>
-                          await _getPokemon(currentPokemon)
+                ? data.results.map((currentPokemon) =>
+                      _getPokemon(currentPokemon)
                   )
                 : [];
         const count = data.count || 0;
 
-        return {
+        const result = {
             count: count,
             result: pokemons,
         };
+
+        //set cache data
+        if (pokemons && pokemons.length > 0) {
+            await setPokemonPage(result, offset);
+        }
+
+        return result;
     } catch (error) {
         console.log(error);
         return {
@@ -39,7 +57,7 @@ async function getPokemons(offset = 0) {
     }
 }
 
-async function _getPokemon(pokemon) {
+function _getPokemon(pokemon) {
     const splitUrl = pokemon.url.split("/");
     splitUrl.pop();
 

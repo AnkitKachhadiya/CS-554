@@ -5,4 +5,14 @@ const redisClient = redis.createClient();
     await redisClient.connect();
 })();
 
-module.exports = {};
+async function getPokemonPage(offset) {
+    const cacheData = await redisClient.get(`offsetPage-${offset}`);
+
+    return cacheData ? JSON.parse(cacheData) : null;
+}
+
+async function setPokemonPage(data, offset) {
+    await redisClient.set(`offsetPage-${offset}`, JSON.stringify(data));
+}
+
+module.exports = { setPokemonPage, getPokemonPage };

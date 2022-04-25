@@ -27,9 +27,12 @@ function TrainerPokemonList({ pokemon }) {
                                     ? currentPokemon.title
                                     : `Gotta Catch 'Em All`
                             }
-                            onError={(event) =>
-                                (event.target.src = "/no-pokemon.png")
-                            }
+                            onError={(event) => {
+                                return (event.target.src =
+                                    currentPokemon && currentPokemon.url
+                                        ? "/pokemon-not-found.png"
+                                        : "/no-pokemon.png");
+                            }}
                             height="215"
                             width="215"
                         />
