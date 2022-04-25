@@ -1,71 +1,59 @@
-import { Table, Row, Col } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import TrainerPokemonList from "./TrainerPokemonList";
 
 function TrainerList({ handleSelectTrainer, handleDeleteTrainer }) {
     const trainers = useSelector((state) => state.allTrainers);
 
     return (
-        trainers &&
-        trainers.length > 0 && (
-            <Row>
-                <Col></Col>
-                <Col xs={6}>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th className="text-center">Trainer</th>
-                                <th className="text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {trainers.map((currentTrainer) => (
-                                <tr key={currentTrainer.id}>
-                                    <td className="text-center">
-                                        {currentTrainer.name}
-                                    </td>
-                                    <td className="text-center">
-                                        {currentTrainer.isSelected ? (
-                                            <button
-                                                className="btn btn-success btn-sm mx-1"
-                                                type="button"
-                                            >
-                                                Selected
-                                            </button>
-                                        ) : (
-                                            <button
-                                                className="btn btn-info btn-sm mx-1"
-                                                type="button"
-                                                onClick={() =>
-                                                    handleSelectTrainer(
-                                                        currentTrainer.id
-                                                    )
-                                                }
-                                            >
-                                                Select Trainer
-                                            </button>
-                                        )}
-                                        {!currentTrainer.isSelected && (
-                                            <button
-                                                className="btn btn-danger btn-sm"
-                                                type="button"
-                                                onClick={() =>
-                                                    handleDeleteTrainer(
-                                                        currentTrainer.id
-                                                    )
-                                                }
-                                            >
-                                                Delete
-                                            </button>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </Col>
-                <Col></Col>
-            </Row>
-        )
+        <Container className="mt-5">
+            {trainers &&
+                trainers.length > 0 &&
+                trainers.map((currentTrainer) => (
+                    <div key={currentTrainer.id}>
+                        <div>
+                            <p className="m-0">
+                                <span className="fs-5 fw-bold mx-1">
+                                    Trainer: {currentTrainer.name}
+                                </span>
+                            </p>
+
+                            <div className="float-end">
+                                {!currentTrainer.isSelected && (
+                                    <>
+                                        <button
+                                            className="badge bg-danger border-0 mx-1"
+                                            onClick={() =>
+                                                handleDeleteTrainer(
+                                                    currentTrainer.id
+                                                )
+                                            }
+                                        >
+                                            Delete Trainer
+                                        </button>
+                                        <button
+                                            className="badge bg-info border-0 mx-1"
+                                            onClick={() =>
+                                                handleSelectTrainer(
+                                                    currentTrainer.id
+                                                )
+                                            }
+                                        >
+                                            Select Trainer
+                                        </button>
+                                    </>
+                                )}
+                                {currentTrainer.isSelected && (
+                                    <button className="badge bg-success border-0 mx-1">
+                                        Selected
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                        <TrainerPokemonList pokemon={currentTrainer.pokemon} />
+                    </div>
+                ))}
+        </Container>
     );
 }
 

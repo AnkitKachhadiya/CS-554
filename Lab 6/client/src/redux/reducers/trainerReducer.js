@@ -20,6 +20,38 @@ export const trainerReducer = (state = [], { type, payload }) => {
                     : { ...currentTrainer, isSelected: false };
             });
 
+        case ActionTypes.CATCH_POKEMON:
+            return state.map((currentTrainer) => {
+                if (currentTrainer.isSelected === false) {
+                    return currentTrainer;
+                }
+
+                return {
+                    ...currentTrainer,
+                    pokemon: [
+                        ...currentTrainer.pokemon,
+                        { ...payload.pokemon },
+                    ],
+                    pokemonCount: currentTrainer.pokemonCount + 1,
+                };
+            });
+
+        case ActionTypes.RELEASE_POKEMON:
+            return state.map((currentTrainer) => {
+                if (currentTrainer.isSelected === false) {
+                    return currentTrainer;
+                }
+
+                return {
+                    ...currentTrainer,
+                    pokemon: currentTrainer.pokemon.filter(
+                        (currentPokemon) =>
+                            currentPokemon.id !== payload.pokemonId
+                    ),
+                    pokemonCount: currentTrainer.pokemonCount - 1,
+                };
+            });
+
         default:
             return state;
     }

@@ -20,3 +20,17 @@ export const selectTrainer = (trainerId) => {
         payload: { trainerId: trainerId },
     };
 };
+
+export const catchPokemon = (pokemon) => {
+    return {
+        type: ActionTypes.CATCH_POKEMON,
+        payload: { pokemon: pokemon },
+    };
+};
+
+export const releasePokemon = (pokemonId) => {
+    return {
+        type: ActionTypes.RELEASE_POKEMON,
+        payload: { pokemonId: pokemonId },
+    };
+};

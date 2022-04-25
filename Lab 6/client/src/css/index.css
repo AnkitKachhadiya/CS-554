@@ -11,6 +11,9 @@ body {
 
 .card:hover {
     transform: translate3d(0, -2%, 0);
+}
+
+.card:hover a {
     color: #feca1b !important;
 }
 
