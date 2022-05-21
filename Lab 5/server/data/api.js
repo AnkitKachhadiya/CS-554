@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const BASE_URL = "https://api.unsplash.com/";
-const ACCESS_KEY = "_kEH7ozdVUUbKA3H7KRdgxVDdxyn2EVRXwGEC4RaGZU";
+const ACCESS_KEY = "ACCESS_KEY";
 
 async function getUnsplashImages(pageNum = 0) {
     try {

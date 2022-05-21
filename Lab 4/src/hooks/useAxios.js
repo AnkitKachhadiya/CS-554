@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import md5 from "md5";
 
-const PUBLIC_KEY = "875175d4d2e7d46ee03a11521673f4f8";
-const PRIVATE_KEY = "568731aae996814b06edf9552e264a8b8f8df3cd";
+const PUBLIC_KEY = "PUBLIC_KEY";
+const PRIVATE_KEY = "PRIVATE_KEY";
 
 const timestamp = new Date().getTime();
 

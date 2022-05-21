@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node app.js"
     },
-    "author": "Ankit Hasmukh Kachhadiya 20007140",
+    "author": "CS 554",
     "license": "ISC",
     "dependencies": {
         "express": "^4.17.2",
